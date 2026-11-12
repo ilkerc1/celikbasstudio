@@ -1,133 +1,215 @@
 const TRANSLATIONS = {
   en: {
-    nav_games: "Mind Nook",
-    nav_play: "Try a Nook",
-    nav_craft: "Studio Craft",
-    nav_support: "Support & Legal",
+    nav_games: "Our games",
+    nav_studio: "The studio",
     nav_contact: "Contact",
-    hero_eyebrow: "Independent Mobile Game Studio · Istanbul",
-    hero_title: "Tactile, unhurried puzzles crafted for quiet moments.",
+    nav_contact_btn: "Let's talk",
+    hero_eyebrow: "Independent by nature. Playful by design.",
+    hero_title: "A different angle on play.",
     hero_lead:
-      "We build calm, offline-first mobile games that respect your time and privacy. Meet our flagship release, <strong>Mind Nook</strong>: seven cozy logic and spatial puzzles tucked inside one wooden box.",
-    hero_cta_primary: "Explore Mind Nook",
-    hero_cta_secondary: "Play Mini Nook in Browser",
-    stat_puzzles: "Cozy Puzzle Modes",
-    stat_offline: "Offline & Local Save",
-    stat_platforms: "App Store & Google Play",
-    hero_caption: "Seven cozy puzzles in one nook",
-    hero_status: "● Available on Mobile",
-    games_eyebrow: "Flagship Release · Mind Nook",
-    games_title: "Seven Cozy Puzzles in One Nook",
+      "Light, logic and the rhythm of a coffee counter. We create mobile games with a world of their own.",
+    hero_cta_primary: "Explore our games",
+    hero_cta_secondary: "Meet the studio",
+    strip_prizmic: "Follow the light",
+    strip_ravel: "Untangle your day",
+    strip_coffee: "Find your rhythm",
+    strip_mindnook: "Seven cozy puzzles",
+    hero_caption: "One beam. A spectrum of possibilities.",
+    hero_status: "● The Collection",
+    games_eyebrow: "01 / Our games",
+    games_title: "Four worlds. One curious mind.",
     games_subtitle:
-      "No flashing timers, no pay-to-win walls, and no internet connection required. Choose the puzzle that fits your mood.",
+      "A new perspective in every game. Discover the ideas behind our collection.",
+    prizmic_platform: "Mobile",
+    prizmic_genre: "Light / Logic",
+    prizmic_tag: "Optical puzzle",
+    prizmic_tagline: "One beam. A spectrum of possibilities.",
+    prizmic_desc:
+      "Guide light through prisms and find the path to the target colours. Every level is a small optics problem with one clean solution.",
+    prizmic_cta: "Privacy & support →",
+    ravel_platform: "Coming soon",
+    ravel_genre: "Thread / Logic",
+    ravel_tag: "Daily logic puzzles",
+    ravel_tagline: "Six knots. One thread.",
+    ravel_desc:
+      "Explore six daily logic puzzles, from Sudoku to Star Battle. Keep your streak and share your progress.",
+    ravel_cta: "Explore the game →",
+    coffee_genre: "Orders / Rhythm",
+    coffee_tag: "Queue & order planning",
+    coffee_tagline: "Every order has its moment.",
+    coffee_desc:
+      "Read the queue, plan your counter and find your rhythm in the morning rush.",
+    coffee_cta: "Support & privacy →",
+    mindnook_genre: "Cozy / Logic",
+    mindnook_tag: "7-in-1 puzzle box",
+    mindnook_tagline: "Seven cozy puzzles in one nook.",
+    mindnook_desc:
+      "Unhurried wooden tangrams, numbered ceramic slides, and sunlit logic grids—stored 100% offline on your device.",
+    mindnook_cta: "Try playable preview ↓",
+    next_idea_text: "The next idea is taking shape. More from the studio, in time.",
+    nook_section_eyebrow: "Inside Mind Nook · Interactive Preview",
+    nook_section_title: "Seven Cozy Puzzles in One Nook",
+    nook_section_subtitle:
+      "Explore the seven puzzle modes inside Mind Nook or take a 30-second break with our playable Ceramic Slide preview right below.",
     filter_all: "All 7 Puzzles",
     filter_spatial: "Spatial & Tiles",
     filter_logic: "Number & Logic",
-    mini_eyebrow: "Interactive Preview",
+    mini_eyebrow: "Playable Micro-Puzzle",
     mini_title: "Take a 30-Second Mind Nook Break",
     mini_desc:
-      "Slide the numbered ceramic tiles into ascending order (1 to 8) by clicking any tile next to the open slot. Every shuffle is mathematically guaranteed to be solvable—no timers, just calm focus.",
+      "Slide the numbered ceramic tiles into ascending order (1 to 8) by clicking any tile next to the open slot. Every shuffle is mathematically guaranteed to be solvable.",
     mini_shuffle: "New Cozy Shuffle",
     mini_reset: "Reset Solved Board",
     mini_board_label: "Ceramic Slide · 3×3",
     mini_moves_label: "Moves:",
     mini_solved_msg: "✨ Nook Complete! Perfectly arranged.",
     mini_playing_msg: "Tap any tile adjacent to the empty space.",
-    craft_eyebrow: "Our Design Principles",
-    craft_title: "Built with Restraint, Warmth & Privacy",
-    craft_subtitle:
-      "At Çelikbaş Studio, we believe mobile games should feel like a favorite wooden board game on a rainy afternoon.",
-    craft_1_title: "Play Anywhere, Zero Accounts",
-    craft_1_desc:
-      "All game progress—stars, coins, completed levels, and settings—is stored exclusively on your device. No sign-ups, no cloud logins, and full airplane-mode support.",
-    craft_2_title: "We Never Collect Personal Data",
-    craft_2_desc:
-      "We do not collect your name, email, contacts, or GPS location. Analytics start switched off by default and strictly respect regional consent and iOS App Tracking Transparency.",
-    craft_3_title: "Earned Through Play",
-    craft_3_desc:
-      "In-game coins are earned purely through solving puzzles. No content is ever locked behind mandatory purchases or dark-pattern timers.",
-    support_eyebrow: "Player Support & Press",
-    support_title: "Need Help or Have Feedback?",
+    studio_eyebrow: "02 / Behind the games",
+    studio_title: "Independent ideas. Unmistakably their own.",
+    studio_p1:
+      "Celikbas Studio is an independent mobile game studio. We start with a distinct mechanic and build the experience around it, from the first decision to the smallest visual detail.",
+    studio_p2:
+      "Clever games that pass the time and sharpen your mind. Some ideas ask you to see differently. Others make room to slow down, or find a rhythm.",
+    pillar_1_title: "Distinctive mechanics",
+    pillar_1_desc:
+      "Whether refracting light through crystal prisms, untangling six daily knots, or managing the morning espresso rush, every game starts from a clear, tactile core idea.",
+    pillar_2_title: "Considered design",
+    pillar_2_desc:
+      "Thoughtful typography, warm surfaces, and unhurried pacing. Every visual and audio detail is shaped to make play feel calm and rewarding.",
+    pillar_3_title: "Made for mobile",
+    pillar_3_desc:
+      "Designed natively for touch, offline play, and local device privacy on iOS and Android—ready for a quick two-minute commute or a quiet evening session.",
+    contact_eyebrow: "03 / Contact",
+    contact_title: "Let's talk.",
+    contact_subtitle:
+      "Game support, press enquiries or an idea for working together. Get in touch with the studio.",
+    press_label: "PRESS KIT",
+    press_title: "Press kit",
+    press_desc:
+      "Logos, key art and fact sheets for Prizmic, Ravel, The Coffee Stand, and Mind Nook—free to use in articles and videos.",
+    press_cta: "Request press materials",
+    support_label: "DIRECT SUPPORT",
+    support_title: "Support",
     support_desc:
-      "Have a question about Mind Nook, found a tricky puzzle level, or want to reach out about publishing and partnerships? Write directly to our studio inbox.",
+      "Purchases, lost progress, ads and data requests, answered by a person.",
     copy_email: "Copy Email",
     copied_email: "Copied!",
-    legal_eyebrow: "Transparency & Compliance",
-    legal_title: "Official Legal & Store Verification",
-    legal_desc:
-      "Direct links to our player privacy policy, terms of service, and authorized digital sellers declaration for Apple App Store and Google Play.",
-    link_privacy: "Privacy Policy — Mind Nook",
-    link_terms: "Terms of Service — Mind Nook",
-    link_appads: "Authorized Seller File (app-ads.txt)",
-    footer_privacy: "Privacy Policy",
-    footer_terms: "Terms of Service",
-    footer_rights: "All rights reserved.",
-    footer_location: "Istanbul, Türkiye"
+    legal_eyebrow: "POLICIES & VERIFICATION",
+    legal_title: "Privacy, Terms & Store Files",
+    link_coffee_support: "Coffee Stand support",
+    link_coffee_privacy: "Coffee Stand & Mind Nook privacy",
+    link_terms: "Terms of use",
+    footer_privacy: "Privacy policy",
+    back_to_top: "Back to top ↑",
+    footer_tagline: "Independent minds. Distinctive games.",
+    footer_tax:
+      "Subject to Repeated Article 20/B of the Income Tax Law of the Republic of Türkiye."
   },
   tr: {
-    nav_games: "Mind Nook",
-    nav_play: "Mini Bulmaca",
-    nav_craft: "Stüdyo Felsefesi",
-    nav_support: "Destek & Yasal",
+    nav_games: "Oyunlarımız",
+    nav_studio: "Stüdyo",
     nav_contact: "İletişim",
-    hero_eyebrow: "Bağımsız Mobil Oyun Stüdyosu · İstanbul",
-    hero_title: "Dingin anlar için özenle tasarlanmış huzurlu bulmacalar.",
+    nav_contact_btn: "İletişime geçin",
+    hero_eyebrow: "Doğası gereği bağımsız. Tasarımıyla oyuncu.",
+    hero_title: "Oyuna farklı bir açıdan bakın.",
     hero_lead:
-      "Zamanınıza ve gizliliğinize saygı duyan, çevrimdışı oynanabilen mobil oyunlar geliştiriyoruz. Amiral gemisi oyunumuz <strong>Mind Nook</strong> ile tanışın: tek bir ahşap kutuda yedi sıcak mantık ve zeka bulmacası.",
-    hero_cta_primary: "Mind Nook'u Keşfet",
-    hero_cta_secondary: "Tarayıcıda Mini Bulmaca Oyna",
-    stat_puzzles: "Farklı Bulmaca Modu",
-    stat_offline: "Çevrimdışı & Cihazda Kayıt",
-    stat_platforms: "App Store & Google Play",
-    hero_caption: "Tek köşede yedi huzurlu bulmaca",
-    hero_status: "● Mobil Mağazalarda Yayında",
-    games_eyebrow: "Amiral Gemisi Oyunumuz · Mind Nook",
-    games_title: "Tek Kutuda Yedi Huzurlu Bulmaca",
+      "Işık, mantık ve bir kahve tezgahının ritmi. Kendine ait bir dünyası olan mobil oyunlar geliştiriyoruz.",
+    hero_cta_primary: "Oyunlarımızı keşfedin",
+    hero_cta_secondary: "Stüdyoyla tanışın",
+    strip_prizmic: "Işığı takip et",
+    strip_ravel: "Günün düğümünü çöz",
+    strip_coffee: "Ritmini bul",
+    strip_mindnook: "Yedi huzurlu bulmaca",
+    hero_caption: "Tek bir ışık hüzmesi. Sonsuz olasılık.",
+    hero_status: "● Koleksiyon",
+    games_eyebrow: "01 / Oyunlarımız",
+    games_title: "Dört dünya. Tek bir meraklı zihin.",
     games_subtitle:
-      "Stresli geri sayımlar, zorunlu satın alımlar veya internet bağlantısı şartı yok. O anki modunuza uygun bulmacayı seçin.",
+      "Her oyunda yeni bir bakış açısı. Koleksiyonumuzun arkasındaki fikirleri keşfedin.",
+    prizmic_platform: "Mobil",
+    prizmic_genre: "Işık / Mantık",
+    prizmic_tag: "Optik bulmaca",
+    prizmic_tagline: "Tek bir ışık hüzmesi. Bir olasılıklar tayfı.",
+    prizmic_desc:
+      "Işığı prizmalardan geçirerek hedef renklere giden yolu bulun. Her bölüm, tek ve net bir çözümü olan küçük bir optik problemidir.",
+    prizmic_cta: "Gizlilik & destek →",
+    ravel_platform: "Çok yakında",
+    ravel_genre: "İplik / Mantık",
+    ravel_tag: "Günlük mantık bulmacaları",
+    ravel_tagline: "Altı düğüm. Tek bir iplik.",
+    ravel_desc:
+      "Sudoku'dan Star Battle'a kadar her gün altı mantık bulmacasını keşfedin. Serinizi koruyun ve ilerlemenizi paylaşın.",
+    ravel_cta: "Oyunu incele →",
+    coffee_genre: "Sipariş / Ritim",
+    coffee_tag: "Sıra & sipariş planlama",
+    coffee_tagline: "Her siparişin kendi anı vardır.",
+    coffee_desc:
+      "Sırayı okuyun, tezgahınızı planlayın ve sabah yoğunluğunda kendi ritminizi yakalayın.",
+    coffee_cta: "Destek & gizlilik →",
+    mindnook_genre: "Huzurlu / Mantık",
+    mindnook_tag: "7'si 1 arada bulmaca kutusu",
+    mindnook_tagline: "Tek köşede yedi huzurlu bulmaca.",
+    mindnook_desc:
+      "Süre baskısı olmayan ahşap tangramlar, numaralı seramik taşlar ve dingin sayı ızgaraları—%100 çevrimdışı ve cihazınızda kayıtlı.",
+    mindnook_cta: "Tarayıcıda dene ↓",
+    next_idea_text: "Sıradaki fikir şekilleniyor. Zamanla stüdyodan daha fazlası gelecek.",
+    nook_section_eyebrow: "Mind Nook Dünyası · Etkileşimli Önizleme",
+    nook_section_title: "Tek Kutuda Yedi Huzurlu Bulmaca",
+    nook_section_subtitle:
+      "Mind Nook içindeki yedi bulmaca modunu inceleyin veya hemen aşağıdaki oynanabilir Seramik Kaydırma ile 30 saniyelik bir mola verin.",
     filter_all: "Tüm 7 Bulmaca",
     filter_spatial: "Uzamsal & Taşlar",
     filter_logic: "Sayı & Mantık",
-    mini_eyebrow: "Etkileşimli Önizleme",
+    mini_eyebrow: "Oynanabilir Mini Bulmaca",
     mini_title: "30 Saniyelik Bir Mind Nook Molası Verin",
     mini_desc:
-      "Boşluğun yanındaki numaralı seramik taşlara tıklayarak 1'den 8'e kadar sıraya dizin. Her karıştırma matematiksel olarak çözülebilirdir—süre sınırı yok, sadece dingin odaklanma.",
+      "Boşluğun yanındaki numaralı seramik taşlara tıklayarak 1'den 8'e kadar sıraya dizin. Her karıştırma matematiksel olarak çözülebilirdir.",
     mini_shuffle: "Yeni Karıştır",
     mini_reset: "Çözülmüş Hali Göster",
     mini_board_label: "Seramik Kaydırma · 3×3",
     mini_moves_label: "Hamle:",
     mini_solved_msg: "✨ Tebrikler! Taşlar kusursuz dizildi.",
     mini_playing_msg: "Boşluğa komşu herhangi bir taşa dokunun.",
-    craft_eyebrow: "Tasarım İlkelerimiz",
-    craft_title: "Sadelik, Sıcaklık ve Gizlilik Üzerine Kurulu",
-    craft_subtitle:
-      "Çelikbaş Studio olarak mobil oyunların, yağmurlu bir öğleden sonra oynanan ahşap bir kutu oyunu kadar samimi hissettirmesi gerektiğine inanıyoruz.",
-    craft_1_title: "Her Yerde Oyna, Hesap Açma Şartı Yok",
-    craft_1_desc:
-      "Yıldızlar, altınlar, tamamlanan bölümler ve ayarlar dahil tüm ilerlemeniz yalnızca kendi cihazınızda saklanır. Üyelik gerektirmez, uçak modunda kesintisiz çalışır.",
-    craft_2_title: "Kişisel Verilerinizi Asla Toplamayız",
-    craft_2_desc:
-      "Adınızı, e-postanızı, rehberinizi veya GPS konumunuzu toplamıyoruz. Analitik ölçümler uygulama açılışında kapalıdır ve yalnızca açık onayınızla çalışır.",
-    craft_3_title: "Oynayarak Kazanılan Adil Yapı",
-    craft_3_desc:
-      "Oyun içi altınlar yalnızca bulmaca çözerek kazanılır. Hiçbir içerik zorunlu ödeme duvarlarının arkasına kilitlenmez.",
-    support_eyebrow: "Oyuncu Desteği & İletişim",
-    support_title: "Yardıma mı İhtiyacınız Var?",
+    studio_eyebrow: "02 / Oyunların arkasında",
+    studio_title: "Bağımsız fikirler. Kendine özgü dünyalar.",
+    studio_p1:
+      "Celikbas Studio bağımsız bir mobil oyun stüdyosudur. Özgün bir mekanikle yola çıkıyor ve ilk karardan en küçük görsel detaya kadar tüm deneyimi onun etrafında inşa ediyoruz.",
+    studio_p2:
+      "Zamanın nasıl geçtiğini unutturan ve zihninizi çalıştıran akıllı oyunlar. Bazı fikirler farklı bakmanızı ister; bazıları ise yavaşlamak veya bir ritim tutturmak için alan açar.",
+    pillar_1_title: "Özgün mekanikler",
+    pillar_1_desc:
+      "İster kristal prizmalardan ışık kırmak, ister altı günlük düğümü çözmek ya da sabah kahve yoğunluğunu yönetmek olsun; her oyun net ve dokunsal bir fikirden doğar.",
+    pillar_2_title: "Özenli tasarım",
+    pillar_2_desc:
+      "Düşünülmüş tipografi, sıcak yüzeyler ve aceleye getirilmemiş bir tempo. Her görsel detay, oyunu dingin ve tatmin edici kılmak için şekillendirilir.",
+    pillar_3_title: "Mobil için üretildi",
+    pillar_3_desc:
+      "iOS ve Android'de dokunmatik ekran, çevrimdışı oynanış ve cihaz içi gizlilik için doğal olarak tasarlandı.",
+    contact_eyebrow: "03 / İletişim",
+    contact_title: "Konuşalım.",
+    contact_subtitle:
+      "Oyun desteği, basın talepleri veya birlikte çalışmak için bir fikir. Stüdyoyla iletişime geçin.",
+    press_label: "BASIN KİTİ",
+    press_title: "Basın kiti",
+    press_desc:
+      "Makale ve videolarda ücretsiz kullanım için Prizmic, Ravel, The Coffee Stand ve Mind Nook logoları, ana görselleri ve bilgi kartları.",
+    press_cta: "Basın materyali isteyin",
+    support_label: "DOĞRUDAN DESTEK",
+    support_title: "Destek",
     support_desc:
-      "Mind Nook hakkında bir sorunuz, geri bildiriminiz veya iş birliği talebiniz mi var? Stüdyo e-posta adresimizden bize doğrudan ulaşabilirsiniz.",
+      "Satın alımlar, kaybolan ilerleme, reklamlar ve veri talepleri doğrudan gerçek bir kişi tarafından yanıtlanır.",
     copy_email: "E-postayı Kopyala",
     copied_email: "Kopyalandı!",
-    legal_eyebrow: "Şeffaflık & Mağaza Doğrulaması",
-    legal_title: "Resmi Yasal Belgeler & Doğrulama",
-    legal_desc:
-      "Apple App Store ve Google Play için gizlilik politikamız, kullanım koşullarımız ve yetkili dijital reklam satıcısı (app-ads.txt) dosyamız.",
-    link_privacy: "Gizlilik Politikası (Privacy Policy)",
-    link_terms: "Kullanım Koşulları (Terms of Service)",
-    link_appads: "Yetkili Satıcı Dosyası (app-ads.txt)",
-    footer_privacy: "Gizlilik Politikası",
-    footer_terms: "Kullanım Koşulları",
-    footer_rights: "Tüm hakları saklıdır.",
-    footer_location: "İstanbul, Türkiye"
+    legal_eyebrow: "POLİTİKALAR & DOĞRULAMA",
+    legal_title: "Gizlilik, Koşullar & Mağaza Dosyaları",
+    link_coffee_support: "Coffee Stand destek",
+    link_coffee_privacy: "Coffee Stand & Mind Nook gizlilik",
+    link_terms: "Kullanım koşulları",
+    footer_privacy: "Gizlilik politikası",
+    back_to_top: "Yukarı çık ↑",
+    footer_tagline: "Bağımsız zihinler. Özgün oyunlar.",
+    footer_tax:
+      "Türkiye Cumhuriyeti Gelir Vergisi Kanunu Mükerrer 20/B Maddesine tabidir."
   }
 };
 
@@ -242,7 +324,7 @@ function renderPuzzles() {
             <span class="puzzle-icon" aria-hidden="true">${puzzle.icon}</span>
             <span class="puzzle-tag">${puzzle.tag[currentLang]}</span>
           </div>
-          <h3 style="margin-top: 16px;">${puzzle.title[currentLang]}</h3>
+          <h3 style="margin-top: 14px;">${puzzle.title[currentLang]}</h3>
           <p>${puzzle.desc[currentLang]}</p>
         </div>
         <div class="puzzle-meta">
@@ -320,7 +402,6 @@ function handleTileClick(index) {
 function shuffleBoard() {
   boardState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
   let previousEmpty = -1;
-  // Perform 24 valid random slides from solved state so it is 100% solvable and cozy
   for (let i = 0; i < 24; i++) {
     const emptyIdx = boardState.indexOf(0);
     const candidates = getNeighbors(emptyIdx).filter((n) => n !== previousEmpty);
@@ -355,14 +436,12 @@ function setLanguage(lang) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Language switchers
   document.querySelectorAll(".lang-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       setLanguage(btn.getAttribute("data-lang"));
     });
   });
 
-  // Filter buttons
   document.querySelectorAll(".filter-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       currentFilter = btn.getAttribute("data-filter") || "all";
@@ -373,7 +452,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Mini puzzle buttons
   const shuffleBtn = document.getElementById("shuffle-puzzle-btn");
   const resetBtn = document.getElementById("solve-hint-btn");
   if (shuffleBtn) {
@@ -387,7 +465,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Copy email button
   const copyBtn = document.getElementById("copy-email-btn");
   if (copyBtn) {
     copyBtn.addEventListener("click", () => {

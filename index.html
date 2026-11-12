@@ -3,26 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Çelikbaş Studio — Handcrafted Cozy Mobile Games & Mind Nook</title>
-  <meta name="description" content="Official home of Çelikbaş Studio and Mind Nook — seven cozy, tactile logic and spatial puzzles in one nook. Offline-first mobile games crafted in Istanbul." />
+  <title>Celikbas Studio — A different angle on play</title>
+  <meta name="description" content="Independent by nature. Playful by design. Light, logic and the rhythm of a coffee counter. Official home of Prizmic, Ravel, The Coffee Stand, and Mind Nook." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site-header" id="top-header">
+  <header class="site-header" id="top">
     <div class="container nav-bar">
-      <a href="/" class="brand-link" id="nav-brand-link">
-        <span class="brand-mark">Ç</span>
-        <span>Çelikbaş Studio</span>
+      <a href="#top" class="brand-link" id="nav-brand-link">
+        <span class="brand-mark">C</span>
+        <span>CelikbasStudio</span>
       </a>
 
       <ul class="nav-links" id="main-nav-links">
-        <li><a href="#games" id="nav-link-games" data-i18n="nav_games">Mind Nook</a></li>
-        <li><a href="#play-nook" id="nav-link-play" data-i18n="nav_play">Try a Nook</a></li>
-        <li><a href="#craft" id="nav-link-craft" data-i18n="nav_craft">Studio Craft</a></li>
-        <li><a href="#support" id="nav-link-support" data-i18n="nav_support">Support & Legal</a></li>
+        <li>
+          <a href="#games" id="nav-link-games">
+            <span class="nav-num">01</span>
+            <span data-i18n="nav_games">Our games</span>
+          </a>
+        </li>
+        <li>
+          <a href="#studio" id="nav-link-studio">
+            <span class="nav-num">02</span>
+            <span data-i18n="nav_studio">The studio</span>
+          </a>
+        </li>
+        <li>
+          <a href="#contact" id="nav-link-contact">
+            <span class="nav-num">03</span>
+            <span data-i18n="nav_contact">Contact</span>
+          </a>
+        </li>
       </ul>
 
       <div class="nav-actions">
@@ -30,7 +44,7 @@
           <button type="button" class="lang-btn active" id="lang-en-btn" data-lang="en">EN</button>
           <button type="button" class="lang-btn" id="lang-tr-btn" data-lang="tr">TR</button>
         </div>
-        <a href="#support" class="btn btn-secondary btn-sm" id="header-contact-btn" data-i18n="nav_contact">Contact</a>
+        <a href="#contact" class="btn btn-secondary btn-sm" id="header-contact-btn" data-i18n="nav_contact_btn">Let's talk</a>
       </div>
     </div>
   </header>
@@ -40,54 +54,174 @@
     <section class="hero-section" id="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <div class="eyebrow-tag" data-i18n="hero_eyebrow">Independent Mobile Game Studio · Istanbul</div>
-          <h1 class="hero-title" data-i18n="hero_title">Tactile, unhurried puzzles crafted for quiet moments.</h1>
+          <div class="eyebrow-tag" data-i18n="hero_eyebrow">Independent by nature. Playful by design.</div>
+          <h1 class="hero-title" data-i18n="hero_title">A different angle on play.</h1>
           <p class="hero-lead" data-i18n="hero_lead">
-            We build calm, offline-first mobile games that respect your time and privacy. Meet our flagship release, <strong>Mind Nook</strong>: seven cozy logic and spatial puzzles tucked inside one wooden box.
+            Light, logic and the rhythm of a coffee counter. We create mobile games with a world of their own.
           </p>
 
           <div class="hero-cta-group">
-            <a href="#games" class="btn btn-primary" id="hero-explore-btn" data-i18n="hero_cta_primary">Explore Mind Nook</a>
-            <a href="#play-nook" class="btn btn-secondary" id="hero-play-btn" data-i18n="hero_cta_secondary">Play Mini Nook in Browser</a>
+            <a href="#games" class="btn btn-primary" id="hero-explore-btn" data-i18n="hero_cta_primary">Explore our games</a>
+            <a href="#studio" class="btn btn-secondary" id="hero-studio-btn" data-i18n="hero_cta_secondary">Meet the studio</a>
           </div>
 
-          <div class="hero-highlights">
-            <div class="highlight-item">
-              <strong>7-in-1</strong>
-              <span data-i18n="stat_puzzles">Cozy Puzzle Modes</span>
-            </div>
-            <div class="highlight-item">
-              <strong>100%</strong>
-              <span data-i18n="stat_offline">Offline & Local Save</span>
-            </div>
-            <div class="highlight-item">
-              <strong>iOS & Android</strong>
-              <span data-i18n="stat_platforms">App Store & Google Play</span>
-            </div>
+          <div class="collection-mini-strip" aria-label="The collection">
+            <a href="#game-prizmic" class="collection-pill" id="strip-prizmic">
+              <strong>Prizmic</strong>
+              <span data-i18n="strip_prizmic">Follow the light</span>
+            </a>
+            <a href="#game-ravel" class="collection-pill" id="strip-ravel">
+              <strong>Ravel</strong>
+              <span data-i18n="strip_ravel">Untangle your day</span>
+            </a>
+            <a href="#game-coffee-stand" class="collection-pill" id="strip-coffee">
+              <strong>The Coffee Stand</strong>
+              <span data-i18n="strip_coffee">Find your rhythm</span>
+            </a>
+            <a href="#game-mind-nook" class="collection-pill" id="strip-mindnook">
+              <strong>Mind Nook</strong>
+              <span data-i18n="strip_mindnook">Seven cozy puzzles</span>
+            </a>
           </div>
         </div>
 
         <div class="hero-visual-card">
           <div class="hero-image-wrap">
-            <img src="assets/mind-nook-art.jpg" alt="Mind Nook wooden puzzle box with geometric tangram tiles and numbered ceramic blocks" />
+            <img src="assets/prizmic-art.jpg" id="hero-featured-img" alt="Prizmic — a prism splitting light into a spectrum" />
           </div>
           <div class="hero-caption-bar">
-            <span><strong>Mind Nook</strong> — <span data-i18n="hero_caption">Seven cozy puzzles in one nook</span></span>
-            <span class="status-badge" data-i18n="hero_status">● Available on Mobile</span>
+            <span><strong>Prizmic</strong> · <span data-i18n="hero_caption">One beam. A spectrum of possibilities.</span></span>
+            <span class="status-badge" data-i18n="hero_status">● The Collection</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Mind Nook: The Seven Cozy Puzzles -->
+    <!-- 01 / Our Games Section -->
     <section class="section-block" id="games">
+      <div class="container">
+        <div class="section-header">
+          <div class="eyebrow-tag" data-i18n="games_eyebrow">01 / Our games</div>
+          <h2 class="section-title" data-i18n="games_title">Four worlds. One curious mind.</h2>
+          <p class="section-subtitle" data-i18n="games_subtitle">
+            A new perspective in every game. Discover the ideas behind our collection.
+          </p>
+        </div>
+
+        <div class="studio-games-grid">
+          <!-- 01: Prizmic -->
+          <article class="game-showcase-card" id="game-prizmic">
+            <div class="game-art-frame">
+              <img src="assets/prizmic-art.jpg" alt="Prizmic — a prism splitting light into a spectrum" />
+              <span class="game-index-badge">01 / 04</span>
+              <span class="game-platform-badge" data-i18n="prizmic_platform">Mobile</span>
+            </div>
+            <div class="game-card-body">
+              <div class="game-genre-row">
+                <span data-i18n="prizmic_genre">Light / Logic</span>
+                <span data-i18n="prizmic_tag">Optical puzzle</span>
+              </div>
+              <h3>Prizmic</h3>
+              <p class="game-tagline" data-i18n="prizmic_tagline">One beam. A spectrum of possibilities.</p>
+              <p class="game-desc" data-i18n="prizmic_desc">
+                Guide light through prisms and find the path to the target colours. Every level is a small optics problem with one clean solution.
+              </p>
+              <div class="game-card-footer">
+                <span data-i18n="strip_prizmic">Follow the light</span>
+                <a href="privacy.html" class="game-link-arrow" id="prizmic-support-link" data-i18n="prizmic_cta">Privacy & support →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 02: Ravel -->
+          <article class="game-showcase-card" id="game-ravel">
+            <div class="game-art-frame">
+              <img src="assets/ravel-art.jpg" alt="Ravel — a gold cross-stitched R on a dark woven background" />
+              <span class="game-index-badge">02 / 04</span>
+              <span class="game-platform-badge" data-i18n="ravel_platform">Coming soon</span>
+            </div>
+            <div class="game-card-body">
+              <div class="game-genre-row">
+                <span data-i18n="ravel_genre">Thread / Logic</span>
+                <span data-i18n="ravel_tag">Daily logic puzzles</span>
+              </div>
+              <h3>Ravel</h3>
+              <p class="game-tagline" data-i18n="ravel_tagline">Six knots. One thread.</p>
+              <p class="game-desc" data-i18n="ravel_desc">
+                Explore six daily logic puzzles, from Sudoku to Star Battle. Keep your streak and share your progress.
+              </p>
+              <div class="game-card-footer">
+                <span data-i18n="strip_ravel">Untangle your day</span>
+                <a href="#contact" class="game-link-arrow" id="ravel-explore-link" data-i18n="ravel_cta">Explore the game →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 03: The Coffee Stand -->
+          <article class="game-showcase-card" id="game-coffee-stand">
+            <div class="game-art-frame">
+              <img src="assets/coffee-stand-art.jpg" alt="The Coffee Stand — a golden coffee kiosk" />
+              <span class="game-index-badge">03 / 04</span>
+              <span class="game-platform-badge">iOS / Android</span>
+            </div>
+            <div class="game-card-body">
+              <div class="game-genre-row">
+                <span data-i18n="coffee_genre">Orders / Rhythm</span>
+                <span data-i18n="coffee_tag">Queue & order planning</span>
+              </div>
+              <h3>The Coffee Stand</h3>
+              <p class="game-tagline" data-i18n="coffee_tagline">Every order has its moment.</p>
+              <p class="game-desc" data-i18n="coffee_desc">
+                Read the queue, plan your counter and find your rhythm in the morning rush.
+              </p>
+              <div class="game-card-footer">
+                <span data-i18n="strip_coffee">Find your rhythm</span>
+                <a href="#contact" class="game-link-arrow" id="coffee-support-link" data-i18n="coffee_cta">Support & privacy →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 04: Mind Nook -->
+          <article class="game-showcase-card" id="game-mind-nook">
+            <div class="game-art-frame">
+              <img src="assets/mind-nook-art.jpg" alt="Mind Nook — wooden puzzle box with geometric tangram tiles and ceramic blocks" />
+              <span class="game-index-badge">04 / 04</span>
+              <span class="game-platform-badge">iOS / Android</span>
+            </div>
+            <div class="game-card-body">
+              <div class="game-genre-row">
+                <span data-i18n="mindnook_genre">Cozy / Logic</span>
+                <span data-i18n="mindnook_tag">7-in-1 puzzle box</span>
+              </div>
+              <h3>Mind Nook</h3>
+              <p class="game-tagline" data-i18n="mindnook_tagline">Seven cozy puzzles in one nook.</p>
+              <p class="game-desc" data-i18n="mindnook_desc">
+                Unhurried wooden tangrams, numbered ceramic slides, and sunlit logic grids—stored 100% offline on your device.
+              </p>
+              <div class="game-card-footer">
+                <a href="#play-nook" class="game-link-arrow" id="mindnook-play-link" data-i18n="mindnook_cta">Try playable preview ↓</a>
+                <a href="privacy.html" class="game-link-arrow" id="mindnook-privacy-link" data-i18n="prizmic_cta">Privacy & support →</a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="next-idea-banner">
+          <span data-i18n="next_idea_text">The next idea is taking shape. More from the studio, in time.</span>
+          <a href="#contact" class="game-link-arrow" data-i18n="nav_contact_btn">Let's talk →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mind Nook: Interactive Browser Mini-Puzzle & 7 Modes -->
+    <section class="section-block" id="play-nook">
       <div class="container">
         <div class="section-header-row">
           <div>
-            <div class="eyebrow-tag" data-i18n="games_eyebrow">Flagship Release · Mind Nook</div>
-            <h2 class="section-title" data-i18n="games_title">Seven Cozy Puzzles in One Nook</h2>
-            <p class="section-subtitle" data-i18n="games_subtitle">
-              No flashing timers, no pay-to-win walls, and no internet connection required. Choose the puzzle that fits your mood.
+            <div class="eyebrow-tag" data-i18n="nook_section_eyebrow">Inside Mind Nook · Interactive Preview</div>
+            <h2 class="section-title" data-i18n="nook_section_title">Seven Cozy Puzzles in One Nook</h2>
+            <p class="section-subtitle" data-i18n="nook_section_subtitle">
+              Explore the seven puzzle modes inside Mind Nook or take a 30-second break with our playable Ceramic Slide preview right below.
             </p>
           </div>
 
@@ -99,20 +233,15 @@
         </div>
 
         <div class="puzzles-grid" id="puzzles-grid-container">
-          <!-- Populated dynamically via app.js for instant EN/TR switching and filtering -->
+          <!-- Populated by app.js -->
         </div>
-      </div>
-    </section>
 
-    <!-- Interactive Browser Mini-Puzzle -->
-    <section class="section-block" id="play-nook">
-      <div class="container">
         <div class="play-showcase">
           <div>
-            <div class="eyebrow-tag" data-i18n="mini_eyebrow">Interactive Preview</div>
-            <h2 class="section-title" data-i18n="mini_title">Take a 30-Second Mind Nook Break</h2>
-            <p class="section-subtitle" style="margin-top: 12px; margin-bottom: 24px;" data-i18n="mini_desc">
-              Slide the numbered ceramic tiles into ascending order (1 to 8) by clicking any tile next to the open slot. Every shuffle is mathematically guaranteed to be solvable—no timers, just calm focus.
+            <div class="eyebrow-tag" data-i18n="mini_eyebrow">Playable Micro-Puzzle</div>
+            <h3 class="section-title" style="font-size: 1.75rem;" data-i18n="mini_title">Take a 30-Second Mind Nook Break</h3>
+            <p class="section-subtitle" style="margin-top: 10px; margin-bottom: 22px;" data-i18n="mini_desc">
+              Slide the numbered ceramic tiles into ascending order (1 to 8) by clicking any tile next to the open slot. Every shuffle is mathematically guaranteed to be solvable.
             </p>
             <div style="display: flex; flex-wrap: wrap; gap: 12px;">
               <button type="button" class="btn btn-primary" id="shuffle-puzzle-btn" data-i18n="mini_shuffle">New Cozy Shuffle</button>
@@ -134,56 +263,91 @@
       </div>
     </section>
 
-    <!-- Studio Philosophy & Privacy Craft -->
-    <section class="section-block" id="craft">
+    <!-- 02 / Behind the Games (The Studio) -->
+    <section class="section-block" id="studio">
       <div class="container">
         <div class="section-header">
-          <div class="eyebrow-tag" data-i18n="craft_eyebrow">Our Design Principles</div>
-          <h2 class="section-title" data-i18n="craft_title">Built with Restraint, Warmth & Privacy</h2>
-          <p class="section-subtitle" data-i18n="craft_subtitle">
-            At Çelikbaş Studio, we believe mobile games should feel like a favorite wooden board game on a rainy afternoon.
-          </p>
+          <div class="eyebrow-tag" data-i18n="studio_eyebrow">02 / Behind the games</div>
+          <h2 class="section-title" data-i18n="studio_title">Independent ideas. Unmistakably their own.</h2>
+        </div>
+
+        <div class="studio-story-grid">
+          <div>
+            <p class="studio-story-lead" data-i18n="studio_p1">
+              Celikbas Studio is an independent mobile game studio. We start with a distinct mechanic and build the experience around it, from the first decision to the smallest visual detail.
+            </p>
+          </div>
+          <div>
+            <p class="studio-story-sub" data-i18n="studio_p2">
+              Clever games that pass the time and sharpen your mind. Some ideas ask you to see differently. Others make room to slow down, or find a rhythm.
+            </p>
+          </div>
         </div>
 
         <div class="craft-grid">
           <article class="craft-card">
-            <span class="craft-number">01 · OFFLINE FIRST</span>
-            <h3 data-i18n="craft_1_title">Play Anywhere, Zero Accounts</h3>
-            <p data-i18n="craft_1_desc">
-              All game progress—stars, coins, completed levels, and settings—is stored exclusively on your device. No sign-ups, no cloud logins, and full airplane-mode support.
+            <span class="craft-number">01 · MECHANICS</span>
+            <h3 data-i18n="pillar_1_title">Distinctive mechanics</h3>
+            <p data-i18n="pillar_1_desc">
+              Whether refracting light through crystal prisms, untangling six daily knots, or managing the morning espresso rush, every game starts from a clear, tactile core idea.
             </p>
           </article>
 
           <article class="craft-card">
-            <span class="craft-number">02 · PRIVACY BY DEFAULT</span>
-            <h3 data-i18n="craft_2_title">We Never Collect Personal Data</h3>
-            <p data-i18n="craft_2_desc">
-              We do not collect your name, email, contacts, or GPS location. Analytics start switched off by default and strictly respect regional consent and iOS App Tracking Transparency.
+            <span class="craft-number">02 · CRAFT</span>
+            <h3 data-i18n="pillar_2_title">Considered design</h3>
+            <p data-i18n="pillar_2_desc">
+              Thoughtful typography, warm surfaces, and unhurried pacing. Every visual and audio detail is shaped to make play feel calm and rewarding.
             </p>
           </article>
 
           <article class="craft-card">
-            <span class="craft-number">03 · FAIR & HONEST</span>
-            <h3 data-i18n="craft_3_title">Earned Through Play</h3>
-            <p data-i18n="craft_3_desc">
-              In-game coins are earned purely through solving puzzles. No content is ever locked behind mandatory purchases or dark-pattern timers.
+            <span class="craft-number">03 · PLATFORM</span>
+            <h3 data-i18n="pillar_3_title">Made for mobile</h3>
+            <p data-i18n="pillar_3_desc">
+              Designed natively for touch, offline play, and local device privacy on iOS and Android—ready for a quick two-minute commute or a quiet evening session.
             </p>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- Support, Legal & AdMob Verification -->
-    <section class="section-block" id="support">
+    <!-- 03 / Contact, Press Kit & Support -->
+    <section class="section-block" id="contact">
       <div class="container">
+        <div class="section-header">
+          <div class="eyebrow-tag" data-i18n="contact_eyebrow">03 / Contact</div>
+          <h2 class="section-title" data-i18n="contact_title">Let's talk.</h2>
+          <p class="section-subtitle" data-i18n="contact_subtitle">
+            Game support, press enquiries or an idea for working together. Get in touch with the studio.
+          </p>
+        </div>
+
         <div class="support-grid">
+          <!-- Press Kit -->
           <div class="support-box">
-            <div class="eyebrow-tag" data-i18n="support_eyebrow">Player Support & Press</div>
-            <h3 data-i18n="support_title">Need Help or Have Feedback?</h3>
-            <p data-i18n="support_desc">
-              Have a question about Mind Nook, found a tricky puzzle level, or want to reach out about publishing and partnerships? Write directly to our studio inbox.
-            </p>
-            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <div>
+              <span class="craft-number" data-i18n="press_label">PRESS KIT</span>
+              <h3 data-i18n="press_title">Press kit</h3>
+              <p data-i18n="press_desc">
+                Logos, key art and fact sheets for Prizmic, Ravel, The Coffee Stand, and Mind Nook—free to use in articles and videos.
+              </p>
+            </div>
+            <a href="mailto:ilker_celikbas@hotmail.com?subject=Press%20Kit%20Request%20-%20Celikbas%20Studio" class="btn btn-secondary" id="request-press-btn" data-i18n="press_cta">
+              Request press materials
+            </a>
+          </div>
+
+          <!-- Player Support -->
+          <div class="support-box">
+            <div>
+              <span class="craft-number" data-i18n="support_label">DIRECT SUPPORT</span>
+              <h3 data-i18n="support_title">Support</h3>
+              <p data-i18n="support_desc">
+                Purchases, lost progress, ads and data requests, answered by a person.
+              </p>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
               <a href="mailto:ilker_celikbas@hotmail.com" class="btn btn-primary" id="mailto-support-btn">
                 ilker_celikbas@hotmail.com
               </a>
@@ -193,32 +357,38 @@
             </div>
           </div>
 
+          <!-- Game Legal & Policies -->
           <div class="support-box">
-            <div class="eyebrow-tag" data-i18n="legal_eyebrow">Transparency & Compliance</div>
-            <h3 data-i18n="legal_title">Official Legal & Store Verification</h3>
-            <p data-i18n="legal_desc">
-              Direct links to our player privacy policy, terms of service, and authorized digital sellers declaration for Apple App Store and Google Play.
-            </p>
-            <ul class="legal-links-list">
-              <li>
-                <a href="privacy.html" class="legal-link-item" id="link-privacy-policy">
-                  <span data-i18n="link_privacy">Privacy Policy — Mind Nook</span>
-                  <span>→</span>
-                </a>
-              </li>
-              <li>
-                <a href="terms.html" class="legal-link-item" id="link-terms-service">
-                  <span data-i18n="link_terms">Terms of Service — Mind Nook</span>
-                  <span>→</span>
-                </a>
-              </li>
-              <li>
-                <a href="app-ads.txt" class="legal-link-item" id="link-app-ads">
-                  <span data-i18n="link_appads">Authorized Seller File (app-ads.txt)</span>
-                  <span>→</span>
-                </a>
-              </li>
-            </ul>
+            <div>
+              <span class="craft-number" data-i18n="legal_eyebrow">POLICIES & VERIFICATION</span>
+              <h3 data-i18n="legal_title">Privacy, Terms & Store Files</h3>
+              <ul class="legal-links-list" style="margin-top: 14px;">
+                <li>
+                  <a href="mailto:ilker_celikbas@hotmail.com?subject=The%20Coffee%20Stand%20Support" class="legal-link-item" id="link-coffee-support">
+                    <span data-i18n="link_coffee_support">Coffee Stand support</span>
+                    <span>→</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="privacy.html" class="legal-link-item" id="link-coffee-privacy">
+                    <span data-i18n="link_coffee_privacy">Coffee Stand & Mind Nook privacy</span>
+                    <span>→</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="terms.html" class="legal-link-item" id="link-terms-service">
+                    <span data-i18n="link_terms">Terms of use</span>
+                    <span>→</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="app-ads.txt" class="legal-link-item" id="link-app-ads">
+                    <span>app-ads.txt (AdMob)</span>
+                    <span>→</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -229,22 +399,24 @@
     <div class="container">
       <div class="footer-inner">
         <div class="brand-link" style="color: #fff;">
-          <span class="brand-mark">Ç</span>
-          <span>Çelikbaş Studio</span>
+          <span class="brand-mark">C</span>
+          <span>Celikbas Studio</span>
         </div>
         <div class="footer-links">
-          <a href="#games" data-i18n="nav_games">Mind Nook</a>
-          <a href="#play-nook" data-i18n="nav_play">Try a Nook</a>
-          <a href="privacy.html" data-i18n="footer_privacy">Privacy Policy</a>
-          <a href="terms.html" data-i18n="footer_terms">Terms of Service</a>
+          <a href="mailto:ilker_celikbas@hotmail.com?subject=The%20Coffee%20Stand%20Support" data-i18n="link_coffee_support">Coffee Stand support</a>
+          <a href="privacy.html" data-i18n="footer_privacy">Privacy policy</a>
+          <a href="terms.html" data-i18n="link_terms">Terms of use</a>
           <a href="app-ads.txt">app-ads.txt</a>
-          <a href="mailto:ilker_celikbas@hotmail.com">ilker_celikbas@hotmail.com</a>
+          <a href="#top" data-i18n="back_to_top">Back to top ↑</a>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2026 Çelikbaş Studio (celikbasstudio.com). <span data-i18n="footer_rights">All rights reserved.</span></span>
-        <span data-i18n="footer_location">Istanbul, Türkiye</span>
+        <span>© 2026 Celikbas Studio · <span data-i18n="footer_tagline">Independent minds. Distinctive games.</span></span>
+        <span>ilker_celikbas@hotmail.com</span>
       </div>
+      <p class="tax-notice" data-i18n="footer_tax">
+        Subject to Repeated Article 20/B of the Income Tax Law of the Republic of Türkiye.
+      </p>
     </div>
   </footer>
 
