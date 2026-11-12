@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Çelikbaş Studio — Handcrafted Cozy Mobile Games & Mind Nook</title>
+  <meta name="description" content="Official home of Çelikbaş Studio and Mind Nook — seven cozy, tactile logic and spatial puzzles in one nook. Offline-first mobile games crafted in Istanbul." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header" id="top-header">
+    <div class="container nav-bar">
+      <a href="/" class="brand-link" id="nav-brand-link">
+        <span class="brand-mark">Ç</span>
+        <span>Çelikbaş Studio</span>
+      </a>
+
+      <ul class="nav-links" id="main-nav-links">
+        <li><a href="#games" id="nav-link-games" data-i18n="nav_games">Mind Nook</a></li>
+        <li><a href="#play-nook" id="nav-link-play" data-i18n="nav_play">Try a Nook</a></li>
+        <li><a href="#craft" id="nav-link-craft" data-i18n="nav_craft">Studio Craft</a></li>
+        <li><a href="#support" id="nav-link-support" data-i18n="nav_support">Support & Legal</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="lang-switch" role="group" aria-label="Language switcher">
+          <button type="button" class="lang-btn active" id="lang-en-btn" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" id="lang-tr-btn" data-lang="tr">TR</button>
+        </div>
+        <a href="#support" class="btn btn-secondary btn-sm" id="header-contact-btn" data-i18n="nav_contact">Contact</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow-tag" data-i18n="hero_eyebrow">Independent Mobile Game Studio · Istanbul</div>
+          <h1 class="hero-title" data-i18n="hero_title">Tactile, unhurried puzzles crafted for quiet moments.</h1>
+          <p class="hero-lead" data-i18n="hero_lead">
+            We build calm, offline-first mobile games that respect your time and privacy. Meet our flagship release, <strong>Mind Nook</strong>: seven cozy logic and spatial puzzles tucked inside one wooden box.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#games" class="btn btn-primary" id="hero-explore-btn" data-i18n="hero_cta_primary">Explore Mind Nook</a>
+            <a href="#play-nook" class="btn btn-secondary" id="hero-play-btn" data-i18n="hero_cta_secondary">Play Mini Nook in Browser</a>
+          </div>
+
+          <div class="hero-highlights">
+            <div class="highlight-item">
+              <strong>7-in-1</strong>
+              <span data-i18n="stat_puzzles">Cozy Puzzle Modes</span>
+            </div>
+            <div class="highlight-item">
+              <strong>100%</strong>
+              <span data-i18n="stat_offline">Offline & Local Save</span>
+            </div>
+            <div class="highlight-item">
+              <strong>iOS & Android</strong>
+              <span data-i18n="stat_platforms">App Store & Google Play</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual-card">
+          <div class="hero-image-wrap">
+            <img src="assets/mind-nook-art.jpg" alt="Mind Nook wooden puzzle box with geometric tangram tiles and numbered ceramic blocks" />
+          </div>
+          <div class="hero-caption-bar">
+            <span><strong>Mind Nook</strong> — <span data-i18n="hero_caption">Seven cozy puzzles in one nook</span></span>
+            <span class="status-badge" data-i18n="hero_status">● Available on Mobile</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mind Nook: The Seven Cozy Puzzles -->
+    <section class="section-block" id="games">
+      <div class="container">
+        <div class="section-header-row">
+          <div>
+            <div class="eyebrow-tag" data-i18n="games_eyebrow">Flagship Release · Mind Nook</div>
+            <h2 class="section-title" data-i18n="games_title">Seven Cozy Puzzles in One Nook</h2>
+            <p class="section-subtitle" data-i18n="games_subtitle">
+              No flashing timers, no pay-to-win walls, and no internet connection required. Choose the puzzle that fits your mood.
+            </p>
+          </div>
+
+          <div class="filter-pills" id="puzzle-filter-group">
+            <button type="button" class="filter-btn active" id="filter-all" data-filter="all" data-i18n="filter_all">All 7 Puzzles</button>
+            <button type="button" class="filter-btn" id="filter-spatial" data-filter="spatial" data-i18n="filter_spatial">Spatial & Tiles</button>
+            <button type="button" class="filter-btn" id="filter-logic" data-filter="logic" data-i18n="filter_logic">Number & Logic</button>
+          </div>
+        </div>
+
+        <div class="puzzles-grid" id="puzzles-grid-container">
+          <!-- Populated dynamically via app.js for instant EN/TR switching and filtering -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Browser Mini-Puzzle -->
+    <section class="section-block" id="play-nook">
+      <div class="container">
+        <div class="play-showcase">
+          <div>
+            <div class="eyebrow-tag" data-i18n="mini_eyebrow">Interactive Preview</div>
+            <h2 class="section-title" data-i18n="mini_title">Take a 30-Second Mind Nook Break</h2>
+            <p class="section-subtitle" style="margin-top: 12px; margin-bottom: 24px;" data-i18n="mini_desc">
+              Slide the numbered ceramic tiles into ascending order (1 to 8) by clicking any tile next to the open slot. Every shuffle is mathematically guaranteed to be solvable—no timers, just calm focus.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+              <button type="button" class="btn btn-primary" id="shuffle-puzzle-btn" data-i18n="mini_shuffle">New Cozy Shuffle</button>
+              <button type="button" class="btn btn-secondary" id="solve-hint-btn" data-i18n="mini_reset">Reset Solved Board</button>
+            </div>
+          </div>
+
+          <div class="mini-board-card">
+            <div class="board-top-bar">
+              <span data-i18n="mini_board_label">Ceramic Slide · 3×3</span>
+              <span><span data-i18n="mini_moves_label">Moves:</span> <strong id="move-counter">0</strong></span>
+            </div>
+            <div class="tile-grid" id="ceramic-tile-grid" role="grid" aria-label="3 by 3 sliding tile puzzle">
+              <!-- Rendered by app.js -->
+            </div>
+            <div class="board-status" id="puzzle-status-msg"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Studio Philosophy & Privacy Craft -->
+    <section class="section-block" id="craft">
+      <div class="container">
+        <div class="section-header">
+          <div class="eyebrow-tag" data-i18n="craft_eyebrow">Our Design Principles</div>
+          <h2 class="section-title" data-i18n="craft_title">Built with Restraint, Warmth & Privacy</h2>
+          <p class="section-subtitle" data-i18n="craft_subtitle">
+            At Çelikbaş Studio, we believe mobile games should feel like a favorite wooden board game on a rainy afternoon.
+          </p>
+        </div>
+
+        <div class="craft-grid">
+          <article class="craft-card">
+            <span class="craft-number">01 · OFFLINE FIRST</span>
+            <h3 data-i18n="craft_1_title">Play Anywhere, Zero Accounts</h3>
+            <p data-i18n="craft_1_desc">
+              All game progress—stars, coins, completed levels, and settings—is stored exclusively on your device. No sign-ups, no cloud logins, and full airplane-mode support.
+            </p>
+          </article>
+
+          <article class="craft-card">
+            <span class="craft-number">02 · PRIVACY BY DEFAULT</span>
+            <h3 data-i18n="craft_2_title">We Never Collect Personal Data</h3>
+            <p data-i18n="craft_2_desc">
+              We do not collect your name, email, contacts, or GPS location. Analytics start switched off by default and strictly respect regional consent and iOS App Tracking Transparency.
+            </p>
+          </article>
+
+          <article class="craft-card">
+            <span class="craft-number">03 · FAIR & HONEST</span>
+            <h3 data-i18n="craft_3_title">Earned Through Play</h3>
+            <p data-i18n="craft_3_desc">
+              In-game coins are earned purely through solving puzzles. No content is ever locked behind mandatory purchases or dark-pattern timers.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Support, Legal & AdMob Verification -->
+    <section class="section-block" id="support">
+      <div class="container">
+        <div class="support-grid">
+          <div class="support-box">
+            <div class="eyebrow-tag" data-i18n="support_eyebrow">Player Support & Press</div>
+            <h3 data-i18n="support_title">Need Help or Have Feedback?</h3>
+            <p data-i18n="support_desc">
+              Have a question about Mind Nook, found a tricky puzzle level, or want to reach out about publishing and partnerships? Write directly to our studio inbox.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+              <a href="mailto:ilker_celikbas@hotmail.com" class="btn btn-primary" id="mailto-support-btn">
+                ilker_celikbas@hotmail.com
+              </a>
+              <button type="button" class="btn btn-secondary btn-sm" id="copy-email-btn" data-i18n="copy_email">
+                Copy Email
+              </button>
+            </div>
+          </div>
+
+          <div class="support-box">
+            <div class="eyebrow-tag" data-i18n="legal_eyebrow">Transparency & Compliance</div>
+            <h3 data-i18n="legal_title">Official Legal & Store Verification</h3>
+            <p data-i18n="legal_desc">
+              Direct links to our player privacy policy, terms of service, and authorized digital sellers declaration for Apple App Store and Google Play.
+            </p>
+            <ul class="legal-links-list">
+              <li>
+                <a href="privacy.html" class="legal-link-item" id="link-privacy-policy">
+                  <span data-i18n="link_privacy">Privacy Policy — Mind Nook</span>
+                  <span>→</span>
+                </a>
+              </li>
+              <li>
+                <a href="terms.html" class="legal-link-item" id="link-terms-service">
+                  <span data-i18n="link_terms">Terms of Service — Mind Nook</span>
+                  <span>→</span>
+                </a>
+              </li>
+              <li>
+                <a href="app-ads.txt" class="legal-link-item" id="link-app-ads">
+                  <span data-i18n="link_appads">Authorized Seller File (app-ads.txt)</span>
+                  <span>→</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="brand-link" style="color: #fff;">
+          <span class="brand-mark">Ç</span>
+          <span>Çelikbaş Studio</span>
+        </div>
+        <div class="footer-links">
+          <a href="#games" data-i18n="nav_games">Mind Nook</a>
+          <a href="#play-nook" data-i18n="nav_play">Try a Nook</a>
+          <a href="privacy.html" data-i18n="footer_privacy">Privacy Policy</a>
+          <a href="terms.html" data-i18n="footer_terms">Terms of Service</a>
+          <a href="app-ads.txt">app-ads.txt</a>
+          <a href="mailto:ilker_celikbas@hotmail.com">ilker_celikbas@hotmail.com</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Çelikbaş Studio (celikbasstudio.com). <span data-i18n="footer_rights">All rights reserved.</span></span>
+        <span data-i18n="footer_location">Istanbul, Türkiye</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
