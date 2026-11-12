@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Celikbas Studio — A different angle on play</title>
-  <meta name="description" content="Independent by nature. Playful by design. Light, logic and the rhythm of a coffee counter. Official home of Prizmic, Ravel, The Coffee Stand, and Mind Nook." />
+  <meta name="description" content="Independent by nature. Playful by design. Light, logic and the rhythm of a coffee counter. Official home of Prizmic, Ravel, and The Coffee Stand." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -65,7 +65,7 @@
             <a href="#studio" class="btn btn-secondary" id="hero-studio-btn" data-i18n="hero_cta_secondary">Meet the studio</a>
           </div>
 
-          <div class="collection-mini-strip" aria-label="The collection">
+          <div class="collection-mini-strip" style="grid-template-columns: repeat(3, 1fr);" aria-label="The collection — Three ways to play">
             <a href="#game-prizmic" class="collection-pill" id="strip-prizmic">
               <strong>Prizmic</strong>
               <span data-i18n="strip_prizmic">Follow the light</span>
@@ -78,20 +78,16 @@
               <strong>The Coffee Stand</strong>
               <span data-i18n="strip_coffee">Find your rhythm</span>
             </a>
-            <a href="#game-mind-nook" class="collection-pill" id="strip-mindnook">
-              <strong>Mind Nook</strong>
-              <span data-i18n="strip_mindnook">Seven cozy puzzles</span>
-            </a>
           </div>
         </div>
 
         <div class="hero-visual-card">
           <div class="hero-image-wrap">
-            <img src="assets/prizmic-art.jpg" id="hero-featured-img" alt="Prizmic — a prism splitting light into a spectrum" />
+            <img src="assets/prizmic-art.jpg" id="hero-featured-img" alt="Prizmic — Concept artwork" />
           </div>
           <div class="hero-caption-bar">
-            <span><strong>Prizmic</strong> · <span data-i18n="hero_caption">One beam. A spectrum of possibilities.</span></span>
-            <span class="status-badge" data-i18n="hero_status">● The Collection</span>
+            <span><strong>Prizmic</strong> · <span data-i18n="hero_caption">Concept artwork</span></span>
+            <span class="status-badge" data-i18n="hero_status">● Three ways to play</span>
           </div>
         </div>
       </div>
@@ -102,18 +98,18 @@
       <div class="container">
         <div class="section-header">
           <div class="eyebrow-tag" data-i18n="games_eyebrow">01 / Our games</div>
-          <h2 class="section-title" data-i18n="games_title">Four worlds. One curious mind.</h2>
+          <h2 class="section-title" data-i18n="games_title">Three worlds. One curious mind.</h2>
           <p class="section-subtitle" data-i18n="games_subtitle">
             A new perspective in every game. Discover the ideas behind our collection.
           </p>
         </div>
 
-        <div class="studio-games-grid">
+        <div class="studio-games-grid" style="grid-template-columns: repeat(3, 1fr);">
           <!-- 01: Prizmic -->
           <article class="game-showcase-card" id="game-prizmic">
             <div class="game-art-frame">
               <img src="assets/prizmic-art.jpg" alt="Prizmic — a prism splitting light into a spectrum" />
-              <span class="game-index-badge">01 / 04</span>
+              <span class="game-index-badge">01 / 03</span>
               <span class="game-platform-badge" data-i18n="prizmic_platform">Mobile</span>
             </div>
             <div class="game-card-body">
@@ -137,7 +133,7 @@
           <article class="game-showcase-card" id="game-ravel">
             <div class="game-art-frame">
               <img src="assets/ravel-art.jpg" alt="Ravel — a gold cross-stitched R on a dark woven background" />
-              <span class="game-index-badge">02 / 04</span>
+              <span class="game-index-badge">02 / 03</span>
               <span class="game-platform-badge" data-i18n="ravel_platform">Coming soon</span>
             </div>
             <div class="game-card-body">
@@ -161,7 +157,7 @@
           <article class="game-showcase-card" id="game-coffee-stand">
             <div class="game-art-frame">
               <img src="assets/coffee-stand-art.jpg" alt="The Coffee Stand — a golden coffee kiosk" />
-              <span class="game-index-badge">03 / 04</span>
+              <span class="game-index-badge">03 / 03</span>
               <span class="game-platform-badge">iOS / Android</span>
             </div>
             <div class="game-card-body">
@@ -176,31 +172,7 @@
               </p>
               <div class="game-card-footer">
                 <span data-i18n="strip_coffee">Find your rhythm</span>
-                <a href="#contact" class="game-link-arrow" id="coffee-support-link" data-i18n="coffee_cta">Support & privacy →</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- 04: Mind Nook -->
-          <article class="game-showcase-card" id="game-mind-nook">
-            <div class="game-art-frame">
-              <img src="assets/mind-nook-art.jpg" alt="Mind Nook — wooden puzzle box with geometric tangram tiles and ceramic blocks" />
-              <span class="game-index-badge">04 / 04</span>
-              <span class="game-platform-badge">iOS / Android</span>
-            </div>
-            <div class="game-card-body">
-              <div class="game-genre-row">
-                <span data-i18n="mindnook_genre">Cozy / Logic</span>
-                <span data-i18n="mindnook_tag">7-in-1 puzzle box</span>
-              </div>
-              <h3>Mind Nook</h3>
-              <p class="game-tagline" data-i18n="mindnook_tagline">Seven cozy puzzles in one nook.</p>
-              <p class="game-desc" data-i18n="mindnook_desc">
-                Unhurried wooden tangrams, numbered ceramic slides, and sunlit logic grids—stored 100% offline on your device.
-              </p>
-              <div class="game-card-footer">
-                <a href="#play-nook" class="game-link-arrow" id="mindnook-play-link" data-i18n="mindnook_cta">Try playable preview ↓</a>
-                <a href="privacy.html" class="game-link-arrow" id="mindnook-privacy-link" data-i18n="prizmic_cta">Privacy & support →</a>
+                <a href="#contact" class="game-link-arrow" id="coffee-support-link" data-i18n="coffee_cta">Privacy & support →</a>
               </div>
             </div>
           </article>
@@ -209,56 +181,6 @@
         <div class="next-idea-banner">
           <span data-i18n="next_idea_text">The next idea is taking shape. More from the studio, in time.</span>
           <a href="#contact" class="game-link-arrow" data-i18n="nav_contact_btn">Let's talk →</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Mind Nook: Interactive Browser Mini-Puzzle & 7 Modes -->
-    <section class="section-block" id="play-nook">
-      <div class="container">
-        <div class="section-header-row">
-          <div>
-            <div class="eyebrow-tag" data-i18n="nook_section_eyebrow">Inside Mind Nook · Interactive Preview</div>
-            <h2 class="section-title" data-i18n="nook_section_title">Seven Cozy Puzzles in One Nook</h2>
-            <p class="section-subtitle" data-i18n="nook_section_subtitle">
-              Explore the seven puzzle modes inside Mind Nook or take a 30-second break with our playable Ceramic Slide preview right below.
-            </p>
-          </div>
-
-          <div class="filter-pills" id="puzzle-filter-group">
-            <button type="button" class="filter-btn active" id="filter-all" data-filter="all" data-i18n="filter_all">All 7 Puzzles</button>
-            <button type="button" class="filter-btn" id="filter-spatial" data-filter="spatial" data-i18n="filter_spatial">Spatial & Tiles</button>
-            <button type="button" class="filter-btn" id="filter-logic" data-filter="logic" data-i18n="filter_logic">Number & Logic</button>
-          </div>
-        </div>
-
-        <div class="puzzles-grid" id="puzzles-grid-container">
-          <!-- Populated by app.js -->
-        </div>
-
-        <div class="play-showcase">
-          <div>
-            <div class="eyebrow-tag" data-i18n="mini_eyebrow">Playable Micro-Puzzle</div>
-            <h3 class="section-title" style="font-size: 1.75rem;" data-i18n="mini_title">Take a 30-Second Mind Nook Break</h3>
-            <p class="section-subtitle" style="margin-top: 10px; margin-bottom: 22px;" data-i18n="mini_desc">
-              Slide the numbered ceramic tiles into ascending order (1 to 8) by clicking any tile next to the open slot. Every shuffle is mathematically guaranteed to be solvable.
-            </p>
-            <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-              <button type="button" class="btn btn-primary" id="shuffle-puzzle-btn" data-i18n="mini_shuffle">New Cozy Shuffle</button>
-              <button type="button" class="btn btn-secondary" id="solve-hint-btn" data-i18n="mini_reset">Reset Solved Board</button>
-            </div>
-          </div>
-
-          <div class="mini-board-card">
-            <div class="board-top-bar">
-              <span data-i18n="mini_board_label">Ceramic Slide · 3×3</span>
-              <span><span data-i18n="mini_moves_label">Moves:</span> <strong id="move-counter">0</strong></span>
-            </div>
-            <div class="tile-grid" id="ceramic-tile-grid" role="grid" aria-label="3 by 3 sliding tile puzzle">
-              <!-- Rendered by app.js -->
-            </div>
-            <div class="board-status" id="puzzle-status-msg"></div>
-          </div>
         </div>
       </div>
     </section>
@@ -330,7 +252,7 @@
               <span class="craft-number" data-i18n="press_label">PRESS KIT</span>
               <h3 data-i18n="press_title">Press kit</h3>
               <p data-i18n="press_desc">
-                Logos, key art and fact sheets for Prizmic, Ravel, The Coffee Stand, and Mind Nook—free to use in articles and videos.
+                Logos, key art and fact sheets, free to use in articles and videos.
               </p>
             </div>
             <a href="mailto:ilker_celikbas@hotmail.com?subject=Press%20Kit%20Request%20-%20Celikbas%20Studio" class="btn btn-secondary" id="request-press-btn" data-i18n="press_cta">
@@ -360,8 +282,8 @@
           <!-- Game Legal & Policies -->
           <div class="support-box">
             <div>
-              <span class="craft-number" data-i18n="legal_eyebrow">POLICIES & VERIFICATION</span>
-              <h3 data-i18n="legal_title">Privacy, Terms & Store Files</h3>
+              <span class="craft-number" data-i18n="legal_eyebrow">POLICIES & SUPPORT</span>
+              <h3 data-i18n="legal_title">Privacy & Terms</h3>
               <ul class="legal-links-list" style="margin-top: 14px;">
                 <li>
                   <a href="mailto:ilker_celikbas@hotmail.com?subject=The%20Coffee%20Stand%20Support" class="legal-link-item" id="link-coffee-support">
@@ -371,7 +293,7 @@
                 </li>
                 <li>
                   <a href="privacy.html" class="legal-link-item" id="link-coffee-privacy">
-                    <span data-i18n="link_coffee_privacy">Coffee Stand & Mind Nook privacy</span>
+                    <span data-i18n="link_coffee_privacy">Coffee Stand privacy</span>
                     <span>→</span>
                   </a>
                 </li>
@@ -404,7 +326,7 @@
         </div>
         <div class="footer-links">
           <a href="mailto:ilker_celikbas@hotmail.com?subject=The%20Coffee%20Stand%20Support" data-i18n="link_coffee_support">Coffee Stand support</a>
-          <a href="privacy.html" data-i18n="footer_privacy">Privacy policy</a>
+          <a href="privacy.html" data-i18n="link_coffee_privacy">Coffee Stand privacy</a>
           <a href="terms.html" data-i18n="link_terms">Terms of use</a>
           <a href="app-ads.txt">app-ads.txt</a>
           <a href="#top" data-i18n="back_to_top">Back to top ↑</a>
