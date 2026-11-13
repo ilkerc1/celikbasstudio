@@ -1,13 +1,19 @@
 # Celikbas Studio — Official Website (`celikbasstudio.com`)
 
-**Celikbas Studio** resmi çift dilli (İngilizce & Türkçe) web sitesi (**Prizmic**, **Ravel** ve **The Coffee Stand**).
+**Celikbas Studio** resmi çift dilli (İngilizce & Türkçe) web sitesi. Bu repo, canlı sitenin birebir kopyasıdır (13 Kasım 2026 itibarıyla).
+
+Oyunlar: **Prizmic**, **Ravel**, **The Coffee Stand**, **Coffee Stand: Daily Orders**.
 
 ## Dosya Yapısı
 
-- [`index.html`](./index.html) — Ana stüdyo sayfası (`01 Our games`: Prizmic, Ravel, The Coffee Stand · `02 The studio` · `03 Contact`)
-- [`styles.css`](./styles.css) — Tasarım sistemi ve mobil uyumlu stiller
-- [`app.js`](./app.js) — İngilizce / Türkçe dil geçişi (`EN` / `TR`) ve etkileşimler
-- [`privacy.html`](./privacy.html) — Çift dilli Gizlilik Politikası (App Store & Google Play uyumlu)
-- [`terms.html`](./terms.html) — Çift dilli Kullanım Koşulları (Terms of Use)
-- [`app-ads.txt`](./app-ads.txt) — Google AdMob yetkili satıcı doğrulama dosyası (`pub-4989376161902568`)
-- [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml) — GitHub'a her `push` yapıldığında `celikbasstudio.com` FTP sunucusuna otomatik yükleme yapan iş akışı
+Her sayfa tek dosyadır: CSS, JS ve görseller HTML içine gömülüdür.
+
+- [`index.html`](./index.html) — Ana stüdyo sayfası (`01 Our games` · `02 The studio` · `03 Contact`)
+- [`terms.html`](./terms.html) — Kullanım Koşulları
+- [`prizmic/privacy.html`](./prizmic/privacy.html) — Prizmic gizlilik ve destek
+- [`ravel/index.html`](./ravel/index.html) — Ravel oyun sayfası
+- [`ravel/privacy.html`](./ravel/privacy.html) · [`ravel/support.html`](./ravel/support.html) · [`ravel/terms.html`](./ravel/terms.html)
+- [`coffee-stand/privacy.html`](./coffee-stand/privacy.html) · [`coffee-stand/support.html`](./coffee-stand/support.html)
+- [`coffee-stand-daily-orders/privacy.html`](./coffee-stand-daily-orders/privacy.html) · [`coffee-stand-daily-orders/support.html`](./coffee-stand-daily-orders/support.html)
+- [`app-ads.txt`](./app-ads.txt) — Google AdMob yetkili satıcı doğrulama dosyası
+- [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml) — `main` dalına her `push` yapıldığında dosyaları FTP ile `celikbasstudio.com` sunucusuna yükler
