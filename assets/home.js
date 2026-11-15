@@ -1,8 +1,8 @@
 // Home page only: a beam of white light enters a glass prism and leaves as a spectrum.
 // The visitor steers it: moving the pointer (or touching) up and down the hero changes the angle the
 // beam comes in at, and the spectrum swings and widens to match. Left alone, the beam sways by itself.
-// Stops when the hero is off screen or the tab is hidden. Under reduced motion nothing moves by itself;
-// the picture only changes when the visitor moves the pointer.
+// Stops when the hero is off screen or the tab is hidden. Under reduced motion nothing moves by itself:
+// the picture changes only while the visitor moves the pointer, and stays where they leave it.
 (() => {
   const canvas = document.querySelector('.hero-canvas');
   const ctx = canvas && canvas.getContext('2d');
@@ -21,7 +21,6 @@
   let steer = null;       // -1 (pointer at the top) to 1 (bottom) while the visitor is steering
   let holdUntil = 0;      // steering lasts until this time
   let textRight = 0;      // right edge of the hero text, so the beam can stay clear of it
-  let frames = 0;
   const start = performance.now();
   const clamp = v => Math.max(0, Math.min(1, v));
 
@@ -46,11 +45,13 @@
   }
 
   function target(t) {
+    if (still) return steer === null ? REST : steer * SWING;
     if (steer !== null && performance.now() < holdUntil) return steer * SWING;
-    return still ? REST : REST + Math.sin(t * 0.0007) * 0.13;
+    return REST + Math.sin(t * 0.0007) * 0.13;
   }
 
   function draw(t) {
+    if (!w || !h) return;
     const goal = target(t);
     angle = still ? goal : angle + (goal - angle) * 0.09;
     const tilt = angle - REST;
@@ -74,8 +75,8 @@
     const x0 = -10, y0 = p1.y + (p1.x - x0) * Math.tan(angle);
     const ex = x0 + (p1.x - x0) * beamOn, ey = y0 + (p1.y - y0) * beamOn;
     const g = ctx.createLinearGradient(x0, y0, p1.x, p1.y);
-    const fadeIn = narrow ? 0.02 : Math.min(0.78, Math.max(0.5, (textRight + 28 - x0) / (p1.x - x0)));
-    g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(fadeIn, 'rgba(255,255,255,0)'); g.addColorStop(narrow ? 0.3 : fadeIn + 0.2, 'rgba(255,255,255,.9)'); g.addColorStop(1, 'rgba(255,255,255,1)');
+    const fadeIn = narrow ? 0.02 : Math.min(0.9, Math.max(0.5, (textRight + 28 - x0) / (p1.x - x0)));
+    g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(fadeIn, 'rgba(255,255,255,0)'); g.addColorStop(narrow ? 0.3 : Math.min(0.98, fadeIn + 0.2), 'rgba(255,255,255,.9)'); g.addColorStop(1, 'rgba(255,255,255,1)');
     ctx.strokeStyle = g; ctx.lineCap = 'round';
     for (const [lw, a] of [[18, 0.06], [7, 0.16], [2.2, 1]]) { ctx.globalAlpha = a; ctx.lineWidth = lw; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(ex, ey); ctx.stroke(); }
     ctx.globalAlpha = 0.45 * raysOn; ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff';
@@ -103,23 +104,26 @@
     ctx.globalAlpha = 1;
   }
 
-  // Steering. Touch scrolling is left alone: a touch steers for a moment, then the beam goes back to swaying.
+  // Steering. Touch scrolling is left alone: a touch steers for three seconds after its last movement,
+  // a mouse steers until shortly after it leaves the hero.
   function steerTo(event) {
     const box = canvas.getBoundingClientRect();
+    if (!box.height) return;
     steer = clamp((event.clientY - box.top) / box.height) * 2 - 1;
     holdUntil = performance.now() + (event.pointerType === 'mouse' ? 3600000 : 3000);
     if (still) draw(60000);
   }
-  function release() { holdUntil = performance.now() + 700; if (still) setTimeout(() => draw(60000), 750); }
+  function release(event) { if (event.pointerType === 'mouse') holdUntil = performance.now() + 700; }
   zone.addEventListener('pointermove', steerTo);
   zone.addEventListener('pointerdown', steerTo);
   zone.addEventListener('pointerleave', release);
-  if (document.fonts) document.fonts.ready.then(() => { measure(); if (still) draw(60000); });
 
-  function frame(now) {
-    if (++frames % 60 === 0) measure();   // the text changes width when the language is switched
-    draw(now - start); raf = requestAnimationFrame(frame);
-  }
+  // The text changes width when the fonts arrive and when the language is switched.
+  const remeasure = () => { measure(); if (still) draw(60000); };
+  new MutationObserver(remeasure).observe(stage, { childList: true, characterData: true, subtree: true });
+  if (document.fonts) document.fonts.ready.then(remeasure);
+
+  function frame(now) { draw(now - start); raf = requestAnimationFrame(frame); }
   function run() { cancelAnimationFrame(raf); if (!still && onScreen && !document.hidden) raf = requestAnimationFrame(frame); }
 
   new ResizeObserver(resize).observe(canvas);
