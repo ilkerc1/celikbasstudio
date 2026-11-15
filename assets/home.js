@@ -8,12 +8,17 @@
   const ctx = canvas && canvas.getContext('2d');
   if (!ctx) return;
   const stage = canvas.parentElement;
+  const layer = document.createElement('canvas'), paint = layer.getContext('2d');   // the spectrum is painted here first
   const zone = canvas.closest('.hero') || stage;             // steering works over the whole hero band
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const glassColor = getComputedStyle(canvas).color;        // --band-text, set in home.css
   const stacked = matchMedia('(max-width: 1000px)');          // the same breakpoint home.css uses
-  // White light and its spectrum are the picture itself, not theme colours.
-  const colors = ['255,107,94', '255,162,76', '255,217,90', '123,224,138', '95,216,255', '111,140,255', '181,140,255'];
+  // White light and its spectrum are the picture itself, not theme colours: red to violet.
+  const spectrum = [[255, 92, 80], [255, 158, 66], [255, 226, 92], [108, 232, 138], [80, 214, 255], [104, 132, 255], [186, 128, 255]];
+  const shade = f => {
+    const x = clamp(f) * (spectrum.length - 1), i = Math.min(spectrum.length - 2, Math.floor(x));
+    return spectrum[i].map((v, j) => Math.round(v + (spectrum[i + 1][j] - v) * (x - i)));
+  };
   const REST = 0.17;      // the beam's resting angle, in radians above horizontal
   const SWING = 0.42;     // how far the pointer can tilt it either way
   let w = 0, h = 0, raf = 0, onScreen = true;
@@ -30,6 +35,8 @@
     w = box.width; h = box.height;
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    layer.width = canvas.width; layer.height = canvas.height;
+    paint.setTransform(dpr, 0, 0, dpr, 0, 0);
     measure();
     if (still) draw(60000);
   }
@@ -79,22 +86,70 @@
     g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(fadeIn, 'rgba(255,255,255,0)'); g.addColorStop(narrow ? 0.3 : Math.min(0.98, fadeIn + 0.2), 'rgba(255,255,255,.9)'); g.addColorStop(1, 'rgba(255,255,255,1)');
     ctx.strokeStyle = g; ctx.lineCap = 'round';
     for (const [lw, a] of [[18, 0.06], [7, 0.16], [2.2, 1]]) { ctx.globalAlpha = a; ctx.lineWidth = lw; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(ex, ey); ctx.stroke(); }
-    ctx.globalAlpha = 0.45 * raysOn; ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff';
-    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
 
-    // the spectrum: a beam from below leaves almost level, a beam from above is thrown down and spreads wider
+    // The light leaves the far face over a short stretch of glass and fans out as one continuous glow:
+    // white-hot where it leaves the glass, coloured as it spreads, soft at the red and violet edges, with a
+    // wider, fainter halo around it. It is painted on its own layer and added to the picture.
+    const faceLength = Math.hypot(C.x - A.x, C.y - A.y);
+    const face = { x: (C.x - A.x) / faceLength, y: (C.y - A.y) / faceLength };
+    const exit = size * 0.05;
     const reach = narrow ? w * 0.9 : w * 0.62;
     const spread = 0.058 + Math.abs(tilt) * 0.05 + (still ? 0 : Math.sin(t * 0.0006) * 0.008);
-    colors.forEach((c, i) => {
-      const a = -0.03 - tilt * 0.6 + i * spread, d = spread * 0.62;
-      const far = k => ({ x: p2.x + Math.cos(a + k) * reach, y: p2.y + Math.sin(a + k) * reach });
-      const f1 = far(-d), f2 = far(d), mid = far(0);
-      const fill = ctx.createLinearGradient(p2.x, p2.y, mid.x, mid.y);
-      fill.addColorStop(0, `rgba(${c},.95)`); fill.addColorStop(0.5, `rgba(${c},.42)`); fill.addColorStop(1, `rgba(${c},0)`);
-      ctx.globalAlpha = raysOn * (0.62 + (still ? 0 : 0.2 * Math.sin(t * 0.0013 + i * 0.9)));
-      ctx.fillStyle = fill;
-      ctx.beginPath(); ctx.moveTo(p2.x, p2.y); ctx.lineTo(f1.x, f1.y); ctx.lineTo(f2.x, f2.y); ctx.closePath(); ctx.fill();
-    });
+    const width = spread * 7.2, first = -0.03 - tilt * 0.6 - spread * 0.6;
+    const from = first - width * 0.3, across = width * 1.6;                 // the halo's wider sweep
+    const back = exit / width, centre = first + width / 2;                  // the fan's tip sits just inside the glass
+    const tip = { x: p2.x - Math.cos(centre) * back, y: p2.y - Math.sin(centre) * back };
+    // colour and strength at an angle: f runs 0 (red) to 1 (violet) across the spectrum itself
+    const light = f => {
+      const side = clamp(Math.min(f, 1 - f) / 0.16), core = side * side * (3 - 2 * side);
+      const halo = Math.sin(Math.PI * clamp((f + 0.3) / 1.6));
+      const flicker = still ? 1 : 0.88 + 0.12 * Math.sin(t * 0.0013 + f * 6);
+      return `rgba(${shade(f)},${(Math.min(1, 0.95 * core + 0.16 * halo) * flicker).toFixed(3)})`;
+    };
+    const sweep = (context, a, b, radius) => { context.beginPath(); context.moveTo(tip.x, tip.y); context.arc(tip.x, tip.y, radius, a, b); context.closePath(); };
+
+    paint.globalCompositeOperation = 'source-over'; paint.globalAlpha = 1;
+    paint.clearRect(0, 0, w, h);
+    if (paint.createConicGradient) {
+      const cone = paint.createConicGradient(from, tip.x, tip.y);
+      for (let k = 0; k <= 48; k++) cone.addColorStop(k / 48 * across / (Math.PI * 2), light(k / 48 * 1.6 - 0.3));
+      paint.fillStyle = cone; sweep(paint, from, from + across, reach); paint.fill();
+    } else {
+      // older browsers: the same fan as slices a few pixels wide (thinner ones leave hairlines between them)
+      const slices = Math.max(12, Math.min(72, Math.round(across * reach / 6)));
+      paint.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < slices; k++) {
+        paint.fillStyle = light((k + 0.5) / slices * 1.6 - 0.3);
+        sweep(paint, from + across * k / slices, from + across * (k + 1) / slices, reach); paint.fill();
+      }
+    }
+    // it fades with distance
+    const fade = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, reach);
+    fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(0.07, 'rgba(0,0,0,.9)'); fade.addColorStop(0.5, 'rgba(0,0,0,.3)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
+    paint.globalCompositeOperation = 'destination-in'; paint.fillStyle = fade; paint.fillRect(0, 0, w, h);
+    // white-hot at the glass
+    const heat = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, reach * 0.12);
+    heat.addColorStop(0, 'rgba(255,255,255,.85)'); heat.addColorStop(1, 'rgba(255,255,255,0)');
+    paint.globalCompositeOperation = 'lighter'; paint.fillStyle = heat; sweep(paint, first, first + width, reach * 0.12); paint.fill();
+    // none of it shows inside the glass
+    paint.globalCompositeOperation = 'destination-out'; paint.fillStyle = '#000';
+    paint.beginPath(); paint.moveTo(A.x, A.y); paint.lineTo(B.x, B.y); paint.lineTo(C.x, C.y); paint.closePath(); paint.fill();
+    ctx.globalAlpha = raysOn; ctx.drawImage(layer, 0, 0, w, h);
+
+    // inside the glass the white beam widens toward the far face
+    const lip = k => [p2.x + face.x * k * exit, p2.y + face.y * k * exit], top = lip(-0.5), bottom = lip(0.5);
+    const inside = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+    inside.addColorStop(0, 'rgba(255,255,255,.75)'); inside.addColorStop(1, 'rgba(255,255,255,.4)');
+    ctx.globalAlpha = raysOn; ctx.fillStyle = inside;
+    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(top[0], top[1]); ctx.lineTo(bottom[0], bottom[1]); ctx.closePath(); ctx.fill();
+
+    // a bloom where the light enters and where it leaves
+    for (const [spot, radius, on] of [[p1, size * 0.07, beamOn], [p2, size * 0.13, raysOn]]) {
+      const bloom = ctx.createRadialGradient(spot.x, spot.y, 0, spot.x, spot.y, radius);
+      bloom.addColorStop(0, 'rgba(255,255,255,.5)'); bloom.addColorStop(0.35, 'rgba(255,255,255,.12)'); bloom.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.globalAlpha = on; ctx.fillStyle = bloom;
+      ctx.beginPath(); ctx.arc(spot.x, spot.y, radius, 0, Math.PI * 2); ctx.fill();
+    }
 
     // the glass
     ctx.globalCompositeOperation = 'source-over';
