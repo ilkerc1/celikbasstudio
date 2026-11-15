@@ -10,6 +10,7 @@
 <link rel="icon" type="image/png" sizes="64x64" href="./assets/img/favicon.png">
 <link rel="icon" type="image/svg+xml" href="./assets/img/favicon.svg">
 <link rel="stylesheet" href="./assets/site.css?v=2">
+<link rel="stylesheet" href="./assets/home.css?v=1">
 </head>
 <body id="top" class="home-page">
 <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
@@ -22,6 +23,7 @@
 </div></header>
 <main id="main" tabindex="-1">
   <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-stage"><canvas class="hero-canvas" aria-hidden="true"></canvas>
     <div class="wrap hero-grid">
       <div class="hero-copy">
         <p class="eyebrow" data-i18n="heroLabel">Independent by nature. Playful by design.</p>
@@ -29,11 +31,7 @@
         <p class="hero-description" data-i18n="heroDescription">Light, logic and the rhythm of a coffee counter. We create mobile games with a world of their own.</p>
         <div class="hero-actions"><a class="button" href="#games"><span data-i18n="explore">Explore our games</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6"/></svg></a><a class="text-link" href="#studio"><span data-i18n="meetStudio">Meet the studio</span></a></div>
       </div>
-      <figure class="hero-art">
-        <img src="./assets/img/prizmic-concept.webp" width="1672" height="941" alt="" fetchpriority="high" decoding="async">
-        <figcaption class="hero-caption"><span>Prizmic</span><span data-i18n="artCaption">Concept artwork</span></figcaption>
-      </figure>
-    </div>
+    </div></div>
     <nav class="game-index" aria-label="Explore the collection" data-i18n-aria="gameNavigation"><div class="wrap game-index-inner">
       <p class="index-label"><strong data-i18n="indexTitle">The collection</strong><span data-i18n="indexSubtitle">Four ways to play</span></p>
       <div class="index-links">
@@ -142,7 +140,6 @@
     "heroDescription": "Işık, mantık ve bir kahve tezgâhının ritmi. Her biri kendi dünyasını kuran mobil oyunlar geliştiriyoruz.",
     "explore": "Oyunları keşfet",
     "meetStudio": "Stüdyoyu tanı",
-    "artCaption": "Konsept görsel",
     "gameNavigation": "Oyun koleksiyonunu keşfet",
     "indexTitle": "Oyunlarımız",
     "indexSubtitle": "Dört farklı deneyim",
@@ -230,5 +227,6 @@
   document.querySelector('.language').hidden = false;
 })();
 </script>
+<script src="./assets/home.js?v=1" defer></script>
 </body>
 </html>
