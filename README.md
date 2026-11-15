@@ -16,6 +16,7 @@ Derleme adımı yoktur; dosyalar olduğu gibi yayınlanır.
 - [`coffee-stand/privacy.html`](./coffee-stand/privacy.html) · [`coffee-stand/support.html`](./coffee-stand/support.html)
 - [`coffee-stand-daily-orders/privacy.html`](./coffee-stand-daily-orders/privacy.html) · [`coffee-stand-daily-orders/support.html`](./coffee-stand-daily-orders/support.html)
 - [`assets/site.css`](./assets/site.css) — Tüm sayfaların ortak tasarımı. Renkler dosyanın başındaki `:root` bloğundadır.
+- [`assets/home.css`](./assets/home.css) · [`assets/home.js`](./assets/home.js) — Sadece ana sayfanın üst bölümündeki hareketli prizma sahnesi
 - [`assets/img/`](./assets/img) — Logo, oyun ikonları ve görseller
 - [`assets/fonts/`](./assets/fonts) — Fraunces ve Figtree yazı tipleri (SIL Open Font License)
 - [`app-ads.txt`](./app-ads.txt) — Google AdMob yetkili satıcı doğrulama dosyası

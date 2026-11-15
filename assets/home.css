@@ -1,0 +1,18 @@
+/* Home page only: the live light stage behind the hero. Colours come from the tokens in site.css. */
+.hero-stage{position:relative;overflow:hidden}
+.hero-canvas{position:absolute;inset:0;width:100%;height:100%;color:var(--band-text)}
+.hero-stage::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--band-bg) 0%,color-mix(in srgb,var(--band-bg) 90%,transparent) 26%,transparent 58%);pointer-events:none}
+.hero-stage .hero-grid{position:relative;z-index:1;grid-template-columns:minmax(0,1fr);align-content:center;min-height:clamp(500px,66vh,680px)}
+.hero-stage .hero-copy{max-width:680px}
+.hero-stage h1{font-size:clamp(50px,7.4vw,108px);line-height:.98}
+.hero-stage .eyebrow,.hero-stage h1 span,.hero-stage .hero-description,.hero-stage .hero-actions{animation:hero-rise .9s cubic-bezier(.2,.7,.2,1) both}
+.hero-stage h1 span:first-child{animation-delay:.08s}
+.hero-stage h1 span:last-child{animation-delay:.18s}
+.hero-stage .hero-description{animation-delay:.34s}
+.hero-stage .hero-actions{animation-delay:.46s}
+@keyframes hero-rise{from{opacity:0;transform:translateY(20px)}}
+@media(max-width:1000px){
+  .hero-stage::after{background:linear-gradient(180deg,var(--band-bg) 0%,color-mix(in srgb,var(--band-bg) 88%,transparent) 52%,transparent 78%)}
+  .hero-stage .hero-grid{align-content:start;min-height:0;padding-bottom:250px}
+}
+@media print{.hero-canvas,.hero-stage::after{display:none}.hero-stage .hero-grid{min-height:0;padding-bottom:24px}}
