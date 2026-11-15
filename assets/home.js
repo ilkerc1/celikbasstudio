@@ -5,7 +5,9 @@
   const ctx = canvas && canvas.getContext('2d');
   if (!ctx) return;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const glassColor = getComputedStyle(canvas).getPropertyValue('--band-text').trim() || '#f4eee1';
+  const glassColor = getComputedStyle(canvas).color;        // --band-text, set in home.css
+  const stacked = matchMedia('(max-width: 1000px)');          // the same breakpoint home.css uses
+  // White light and its spectrum are the picture itself, not theme colours.
   const colors = ['255,107,94', '255,162,76', '255,217,90', '123,224,138', '95,216,255', '111,140,255', '181,140,255'];
   let w = 0, h = 0, raf = 0, onScreen = true;
   const start = performance.now();
@@ -21,7 +23,7 @@
   }
 
   function draw(t) {
-    const narrow = w < 820;
+    const narrow = stacked.matches;
     const size = narrow ? Math.min(w * 0.44, 190) : Math.min(h * 0.58, w * 0.25);
     const cx = narrow ? w * 0.46 : w * 0.67;
     const cy = narrow ? h - size * 0.66 : h * 0.52;
@@ -75,5 +77,6 @@
   new ResizeObserver(resize).observe(canvas);
   new IntersectionObserver(entries => { onScreen = entries[0].isIntersecting; run(); }).observe(canvas);
   document.addEventListener('visibilitychange', run);
+  stacked.addEventListener('change', resize);
   resize(); run();
 })();
