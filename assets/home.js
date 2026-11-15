@@ -37,7 +37,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     // the glow is soft, so its layer holds a quarter of the pixels: it costs a fraction to paint and looks the same
     layer.width = Math.round(w * dpr / 2); layer.height = Math.round(h * dpr / 2);
-    paint.setTransform(dpr / 2, 0, 0, dpr / 2, 0, 0);
+    paint.setTransform(layer.width / w, 0, 0, layer.height / h, 0, 0);
     measure();
     if (still) draw(60000);
   }
@@ -105,34 +105,38 @@
       const side = clamp(Math.min(f, 1 - f) / 0.16), core = side * side * (3 - 2 * side);
       const halo = Math.sin(Math.PI * clamp((f + 0.3) / 1.6));
       const flicker = still ? 1 : 0.88 + 0.12 * Math.sin(t * 0.0013 + f * 6);
-      return `rgba(${shade(f)},${(Math.min(1, 0.95 * core + 0.16 * halo) * flicker).toFixed(3)})`;
+      return `rgba(${shade((f - 0.1) / 0.8)},${(Math.min(1, 0.95 * core + 0.16 * halo) * flicker).toFixed(3)})`;
     };
+    const wall = Math.atan2(face.y, face.x) - 0.05;                         // light cannot leave along or behind the face
     const sweep = (context, a, b, radius) => { context.beginPath(); context.moveTo(tip.x, tip.y); context.arc(tip.x, tip.y, radius, a, b); context.closePath(); };
 
-    // only the part of the layer the fan can reach is painted and copied, in whole layer pixels
-    const q = layer.width / w;
-    const bx = Math.max(0, Math.floor((tip.x - 4) * q)), bw = layer.width - bx;
-    const by = Math.max(0, Math.floor((Math.min(tip.y, tip.y + Math.sin(from) * reach) - 4) * q));
-    const bh = Math.min(layer.height, Math.ceil((Math.max(tip.y, tip.y + Math.sin(from + across) * reach) + 4) * q)) - by;
+    // only the box the fan can reach is masked and copied; the box is whole layer pixels
+    const qx = layer.width / w, qy = layer.height / h;
+    const bx = Math.max(0, Math.floor((tip.x - 4) * qx)), bw = layer.width - bx;
+    const by = Math.max(0, Math.floor((Math.min(tip.y, tip.y + Math.sin(from) * reach) - 4) * qy));
+    const bh = Math.min(layer.height, Math.ceil((Math.max(tip.y, tip.y + Math.sin(from + across) * reach) + 4) * qy)) - by;
+    const box = [bx / qx, by / qy, bw / qx, bh / qy];
     paint.globalCompositeOperation = 'source-over'; paint.globalAlpha = 1;
     paint.clearRect(0, 0, w, h);
     if (paint.createConicGradient) {
       const cone = paint.createConicGradient(from, tip.x, tip.y);
       for (let k = 0; k <= 48; k++) cone.addColorStop(k / 48 * across / (Math.PI * 2), light(k / 48 * 1.6 - 0.3));
-      paint.fillStyle = cone; sweep(paint, from, from + across, reach); paint.fill();
+      paint.fillStyle = cone; sweep(paint, from, Math.min(from + across, wall), reach); paint.fill();
     } else {
-      // older browsers: the same fan as slices a few pixels wide (thinner ones leave hairlines between them)
-      const slices = Math.max(12, Math.min(72, Math.round(across * reach / 6)));
+      // older browsers: the same fan as slices a few pixels wide at the far end (thinner ones leave hairlines)
+      const slices = Math.max(12, Math.min(240, Math.round(across * reach / 6)));
       paint.globalCompositeOperation = 'lighter';
       for (let k = 0; k < slices; k++) {
+        const a = from + across * k / slices;
+        if (a >= wall) break;
         paint.fillStyle = light((k + 0.5) / slices * 1.6 - 0.3);
-        sweep(paint, from + across * k / slices, from + across * (k + 1) / slices, reach); paint.fill();
+        sweep(paint, a, Math.min(from + across * (k + 1) / slices, wall), reach); paint.fill();
       }
     }
     // it fades with distance
     const fade = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, reach);
     fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(0.07, 'rgba(0,0,0,.9)'); fade.addColorStop(0.5, 'rgba(0,0,0,.3)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
-    paint.globalCompositeOperation = 'destination-in'; paint.fillStyle = fade; paint.fillRect(bx / q, by / q, bw / q, bh / q);
+    paint.globalCompositeOperation = 'destination-in'; paint.fillStyle = fade; paint.fillRect(...box);
     // white-hot at the glass
     const heat = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, reach * 0.12);
     heat.addColorStop(0, 'rgba(255,255,255,.85)'); heat.addColorStop(1, 'rgba(255,255,255,0)');
@@ -141,7 +145,7 @@
     paint.globalCompositeOperation = 'destination-out'; paint.fillStyle = '#000';
     paint.beginPath(); paint.moveTo(A.x, A.y); paint.lineTo(B.x, B.y); paint.lineTo(C.x, C.y); paint.closePath(); paint.fill();
     ctx.globalAlpha = raysOn;
-    if (bw > 0 && bh > 0) ctx.drawImage(layer, bx, by, bw, bh, bx / q, by / q, bw / q, bh / q);
+    if (bw > 0 && bh > 0) ctx.drawImage(layer, bx, by, bw, bh, ...box);
 
     // inside the glass the white beam widens toward the far face
     const lip = k => [p2.x + face.x * k * exit, p2.y + face.y * k * exit], top = lip(-0.5), bottom = lip(0.5);
@@ -153,7 +157,7 @@
     // a bloom where the light enters and where it leaves
     for (const [spot, radius, on] of [[p1, size * 0.07, beamOn], [p2, size * 0.13, raysOn]]) {
       const bloom = ctx.createRadialGradient(spot.x, spot.y, 0, spot.x, spot.y, radius);
-      bloom.addColorStop(0, 'rgba(255,255,255,.5)'); bloom.addColorStop(0.35, 'rgba(255,255,255,.12)'); bloom.addColorStop(1, 'rgba(255,255,255,0)');
+      bloom.addColorStop(0, 'rgba(255,255,255,.5)'); bloom.addColorStop(0.25, 'rgba(255,255,255,.16)'); bloom.addColorStop(0.6, 'rgba(255,255,255,.035)'); bloom.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.globalAlpha = on; ctx.fillStyle = bloom;
       ctx.beginPath(); ctx.arc(spot.x, spot.y, radius, 0, Math.PI * 2); ctx.fill();
     }
