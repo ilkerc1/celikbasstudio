@@ -11,7 +11,9 @@
   const layer = document.createElement('canvas'), paint = layer.getContext('2d');   // the spectrum is painted here first
   const zone = canvas.closest('.hero') || stage;             // steering works over the whole hero band
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const glassColor = getComputedStyle(canvas).color;        // --band-text, set in home.css
+  // the glass takes its colour from --band-text, set in home.css
+  const glass = (getComputedStyle(canvas).color.match(/[\d.]+/g) || []).slice(0, 3).join(',') || '255,255,255';
+  const WHITE = '255,255,255';
   const stacked = matchMedia('(max-width: 1000px)');          // the same breakpoint home.css uses
   // White light and its spectrum are the picture itself, not theme colours: red to violet.
   const spectrum = [[255, 92, 80], [255, 158, 66], [255, 226, 92], [108, 232, 138], [80, 214, 255], [104, 132, 255], [186, 128, 255]];
@@ -31,12 +33,14 @@
 
   function resize() {
     const box = canvas.getBoundingClientRect();
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
     w = box.width; h = box.height;
+    // sharp on dense screens, but never more than about four million pixels to paint each frame
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1, Math.sqrt(4e6 / Math.max(1, w * h))));
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    // the glow is soft, so its layer holds a quarter of the pixels: it costs a fraction to paint and looks the same
-    layer.width = Math.round(w * dpr / 2); layer.height = Math.round(h * dpr / 2);
+    // the glow is soft, so its layer holds one pixel per CSS pixel however dense the screen is, and fewer on huge ones
+    const coarse = Math.min(1, Math.sqrt(9e5 / Math.max(1, w * h)));
+    layer.width = Math.max(1, Math.round(w * coarse)); layer.height = Math.max(1, Math.round(h * coarse));
     paint.setTransform(layer.width / w, 0, 0, layer.height / h, 0, 0);
     measure();
     if (still) draw(60000);
@@ -77,16 +81,42 @@
     const raysOn = still ? 1 : clamp((t - 1300) / 1100);
 
     ctx.clearRect(0, 0, w, h);
+    const line = (...points) => { ctx.beginPath(); points.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); };
+    const shape = (...points) => { line(...points); ctx.closePath(); };
+    const ramp = (from, to, colour, stops) => {
+      const gradient = ctx.createLinearGradient(from.x, from.y, to.x, to.y);
+      stops.forEach(([at, alpha]) => gradient.addColorStop(at, `rgba(${colour},${alpha})`));
+      return gradient;
+    };
+    const along = (p, q) => { const d = Math.hypot(q.x - p.x, q.y - p.y) || 1; return { x: (q.x - p.x) / d, y: (q.y - p.y) / d }; };
+    const bounce = (d, n) => { const k = 2 * (d.x * n.x + d.y * n.y); return { x: d.x - k * n.x, y: d.y - k * n.y }; };
+
+    // The glass, under the light: a cut block with a bevel all round, lit from the left.
+    const middle = { x: (A.x + B.x + C.x) / 3, y: (A.y + B.y + C.y) / 3 }, foot = { x: cx, y: C.y };
+    const inset = v => ({ x: v.x + (middle.x - v.x) * 0.17, y: v.y + (middle.y - v.y) * 0.17 });
+    const Ai = inset(A), Bi = inset(B), Ci = inset(C);
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    ctx.fillStyle = ramp(A, foot, glass, [[0, 0.13], [1, 0.05]]); shape(A, B, C); ctx.fill();
+    ctx.fillStyle = ramp(A, B, glass, [[0, 0.17], [1, 0.05]]); shape(A, B, Bi, Ai); ctx.fill();
+    ctx.fillStyle = ramp(A, C, glass, [[0, 0.09], [1, 0.02]]); shape(A, C, Ci, Ai); ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,.14)'; shape(B, C, Ci, Bi); ctx.fill();
     ctx.globalCompositeOperation = 'lighter';
 
-    // incoming white beam: it only becomes visible to the right of the hero text
-    const x0 = -10, y0 = p1.y + (p1.x - x0) * Math.tan(angle);
-    const ex = x0 + (p1.x - x0) * beamOn, ey = y0 + (p1.y - y0) * beamOn;
-    const g = ctx.createLinearGradient(x0, y0, p1.x, p1.y);
-    const fadeIn = narrow ? 0.02 : Math.min(0.9, Math.max(0.5, (textRight + 28 - x0) / (p1.x - x0)));
-    g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(fadeIn, 'rgba(255,255,255,0)'); g.addColorStop(narrow ? 0.3 : Math.min(0.98, fadeIn + 0.2), 'rgba(255,255,255,.9)'); g.addColorStop(1, 'rgba(255,255,255,1)');
-    ctx.strokeStyle = g; ctx.lineCap = 'round';
-    for (const [lw, a] of [[18, 0.06], [7, 0.16], [2.2, 1]]) { ctx.globalAlpha = a; ctx.lineWidth = lw; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(ex, ey); ctx.stroke(); }
+    // incoming white beam: a bright core in a soft glow; it only becomes visible to the right of the hero text
+    const source = { x: -10, y: p1.y + (p1.x + 10) * Math.tan(angle) };
+    const head = { x: source.x + (p1.x - source.x) * beamOn, y: source.y + (p1.y - source.y) * beamOn };
+    const fadeIn = narrow ? 0.02 : Math.min(0.9, Math.max(0.5, (textRight + 28 - source.x) / (p1.x - source.x)));
+    ctx.strokeStyle = ramp(source, p1, WHITE, [[0, 0], [fadeIn, 0], [narrow ? 0.3 : Math.min(0.98, fadeIn + 0.2), 0.9], [1, 1]]);
+    ctx.lineCap = 'round';
+    for (const [wide, strength] of [[24, 0.035], [12, 0.07], [5.5, 0.2], [2, 1]]) {
+      ctx.globalAlpha = strength; ctx.lineWidth = wide; line(source, head); ctx.stroke();
+    }
+    // a little of it glances off the near face
+    const left = along(A, B), leftOut = { x: -left.y, y: left.x };
+    const glance = bounce(along(source, p1), leftOut);
+    const away = { x: p1.x + glance.x * size * 0.45, y: p1.y + glance.y * size * 0.45 };
+    ctx.strokeStyle = ramp(p1, away, WHITE, [[0, 0.2], [1, 0]]);
+    for (const [wide, strength] of [[6, 0.12], [1.3, 1]]) { ctx.globalAlpha = strength * raysOn; ctx.lineWidth = wide; line(p1, away); ctx.stroke(); }
 
     // The light leaves the far face over a short stretch of glass and fans out as one continuous glow:
     // white-hot where it leaves the glass, coloured as it spreads, soft at the red and violet edges, with a
@@ -94,7 +124,7 @@
     const faceLength = Math.hypot(C.x - A.x, C.y - A.y);
     const face = { x: (C.x - A.x) / faceLength, y: (C.y - A.y) / faceLength };
     const exit = size * 0.05;
-    const reach = narrow ? w * 0.9 : w * 0.62;
+    const reach = narrow ? w * 0.95 : w * 0.72;
     const spread = 0.058 + Math.abs(tilt) * 0.05 + (still ? 0 : Math.sin(t * 0.0006) * 0.008);
     const width = spread * 7.2, first = -0.03 - tilt * 0.6 - spread * 0.6;
     const from = first - width * 0.3, across = width * 1.6;                 // the halo's wider sweep
@@ -135,7 +165,7 @@
     }
     // it fades with distance
     const fade = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, reach);
-    fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(0.07, 'rgba(0,0,0,.9)'); fade.addColorStop(0.5, 'rgba(0,0,0,.3)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
+    fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(0.07, 'rgba(0,0,0,.95)'); fade.addColorStop(0.5, 'rgba(0,0,0,.45)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
     paint.globalCompositeOperation = 'destination-in'; paint.fillStyle = fade; paint.fillRect(...box);
     // white-hot at the glass
     const heat = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, reach * 0.12);
@@ -147,27 +177,40 @@
     ctx.globalAlpha = raysOn;
     if (bw > 0 && bh > 0) ctx.drawImage(layer, bx, by, bw, bh, ...box);
 
-    // inside the glass the white beam widens toward the far face
-    const lip = k => [p2.x + face.x * k * exit, p2.y + face.y * k * exit], top = lip(-0.5), bottom = lip(0.5);
-    const inside = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
-    inside.addColorStop(0, 'rgba(255,255,255,.75)'); inside.addColorStop(1, 'rgba(255,255,255,.4)');
-    ctx.globalAlpha = raysOn; ctx.fillStyle = inside;
-    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(top[0], top[1]); ctx.lineTo(bottom[0], bottom[1]); ctx.closePath(); ctx.fill();
+    // inside the glass the white beam widens toward the far face and starts to split: red above, violet below
+    const lip = k => ({ x: p2.x + face.x * k * exit, y: p2.y + face.y * k * exit }), top = lip(-0.5), bottom = lip(0.5);
+    ctx.globalAlpha = raysOn;
+    ctx.fillStyle = ramp(p1, p2, WHITE, [[0, 0.75], [1, 0.4]]); shape(p1, top, bottom); ctx.fill();
+    ctx.lineWidth = 1.4;
+    ctx.strokeStyle = ramp(p1, top, spectrum[0], [[0, 0], [1, 0.75]]); line(p1, top); ctx.stroke();
+    ctx.strokeStyle = ramp(p1, bottom, spectrum[5], [[0, 0], [1, 0.75]]); line(p1, bottom); ctx.stroke();
+    // and a little of it bounces off the far face down to the base
+    const rebound = bounce(along(p1, p2), { x: face.y, y: -face.x });
+    const land = rebound.y > 0.2 ? p2.x + rebound.x * (C.y - p2.y) / rebound.y : NaN;
+    if (land - exit * 1.3 > B.x && land + exit * 1.3 < C.x) {
+      ctx.fillStyle = ramp(p2, { x: land, y: C.y }, WHITE, [[0, 0.2], [1, 0.03]]);
+      shape(top, bottom, { x: land + exit * 1.3, y: C.y }, { x: land - exit * 1.3, y: C.y }); ctx.fill();
+    }
 
     // a bloom where the light enters and where it leaves
-    for (const [spot, radius, on] of [[p1, size * 0.07, beamOn], [p2, size * 0.13, raysOn]]) {
+    for (const [spot, radius, on] of [[p1, size * 0.07, beamOn], [p2, size * 0.14, raysOn]]) {
       const bloom = ctx.createRadialGradient(spot.x, spot.y, 0, spot.x, spot.y, radius);
-      bloom.addColorStop(0, 'rgba(255,255,255,.5)'); bloom.addColorStop(0.25, 'rgba(255,255,255,.16)'); bloom.addColorStop(0.6, 'rgba(255,255,255,.035)'); bloom.addColorStop(1, 'rgba(255,255,255,0)');
+      bloom.addColorStop(0, 'rgba(255,255,255,.55)'); bloom.addColorStop(0.25, 'rgba(255,255,255,.16)'); bloom.addColorStop(0.6, 'rgba(255,255,255,.035)'); bloom.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.globalAlpha = on; ctx.fillStyle = bloom;
       ctx.beginPath(); ctx.arc(spot.x, spot.y, radius, 0, Math.PI * 2); ctx.fill();
     }
 
-    // the glass
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.closePath();
-    ctx.fillStyle = glassColor; ctx.globalAlpha = 0.1; ctx.fill();
-    ctx.lineJoin = 'round'; ctx.lineWidth = 1.6; ctx.strokeStyle = glassColor; ctx.globalAlpha = 0.9; ctx.stroke();
-    ctx.globalAlpha = 1;
+    // The glass, over the light: the inner edge of the bevel, a shine along the lit face, the outline.
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.lineJoin = 'round';
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(${glass},.2)`; shape(Ai, Bi, Ci); ctx.stroke();
+    ctx.strokeStyle = `rgba(${glass},.3)`;
+    for (const [outer, inner] of [[A, Ai], [B, Bi], [C, Ci]]) { line(outer, inner); ctx.stroke(); }
+    const bevel = 0.17 * Math.abs((middle.x - A.x) * leftOut.x + (middle.y - A.y) * leftOut.y);
+    const on = (t, depth) => ({ x: A.x + (B.x - A.x) * t - leftOut.x * depth, y: A.y + (B.y - A.y) * t - leftOut.y * depth });
+    ctx.fillStyle = ramp(on(0.14, 0), on(0.7, 0), glass, [[0, 0], [0.3, 0.42], [1, 0]]);
+    shape(on(0.14, bevel * 0.28), on(0.7, bevel * 0.28), on(0.7, bevel * 0.6), on(0.14, bevel * 0.6)); ctx.fill();
+    ctx.lineWidth = 1.6; ctx.strokeStyle = ramp(A, foot, glass, [[0, 1], [1, 0.62]]); shape(A, B, C); ctx.stroke();
   }
 
   // Steering. Touch scrolling is left alone: a touch steers for three seconds after its last movement,
