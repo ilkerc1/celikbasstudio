@@ -11,11 +11,17 @@
   const layer = document.createElement('canvas'), paint = layer.getContext('2d');   // the spectrum is painted here first
   const zone = canvas.closest('.hero') || stage;             // steering works over the whole hero band
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // The glass takes the canvas's text colour (--band-text, applied in home.css). Painting one pixel with it
-  // turns whatever notation the browser reports into plain red, green, blue.
-  paint.fillStyle = getComputedStyle(canvas).color; paint.fillRect(0, 0, 1, 1);
-  const glass = Array.from(paint.getImageData(0, 0, 1, 1).data.slice(0, 3)).join(',');
   const WHITE = '255,255,255';
+  // The glass takes the canvas's text colour (--band-text, applied in home.css) as plain red, green, blue.
+  // Browsers report it as rgb(); for any other notation one pixel is painted with it and read back.
+  const reported = getComputedStyle(canvas).color, plain = /^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(reported);
+  let glass = plain ? plain.slice(1).join(',') : '';
+  if (!glass) {
+    try {
+      paint.fillStyle = reported; paint.fillRect(0, 0, 1, 1);
+      glass = Array.from(paint.getImageData(0, 0, 1, 1).data.slice(0, 3)).join(',');
+    } catch (error) { glass = WHITE; }
+  }
   const stacked = matchMedia('(max-width: 1000px)');          // the same breakpoint home.css uses
   // White light and its spectrum are the picture itself, not theme colours: red to violet.
   const spectrum = [[255, 92, 80], [255, 158, 66], [255, 226, 92], [108, 232, 138], [80, 214, 255], [104, 132, 255], [186, 128, 255]];
@@ -45,7 +51,7 @@
     layer.width = Math.max(1, Math.round(w * coarse)); layer.height = Math.max(1, Math.round(h * coarse));
     paint.setTransform(layer.width / w, 0, 0, layer.height / h, 0, 0);
     measure();
-    if (still) draw(60000);
+    draw(still ? 60000 : performance.now() - start);     // straight away: sizing a canvas clears it
   }
 
   function measure() {
@@ -105,24 +111,36 @@
     ctx.globalCompositeOperation = 'lighter';
 
     // Incoming white beam: a bright core in a soft glow. It only becomes visible once it is clear of the hero
-    // text: to the right of it, or below it where the layout is stacked.
-    const source = { x: -10, y: p1.y + (p1.x + 10) * Math.tan(angle) };
-    const head = { x: source.x + (p1.x - source.x) * beamOn, y: source.y + (p1.y - source.y) * beamOn };
-    const below = textBottom + 28;
-    const fadeIn = narrow
-      ? (source.y >= below ? 0.02 : Math.min(0.9, Math.max(0.02, (below - source.y) / (p1.y - source.y))))
-      : Math.min(0.9, Math.max(0.5, (textRight + 28 - source.x) / (p1.x - source.x)));
-    ctx.strokeStyle = ramp(source, p1, WHITE, [[0, 0], [fadeIn, 0], [Math.min(0.98, fadeIn + (narrow ? 0.28 : 0.2)), 0.9], [1, 1]]);
-    ctx.lineCap = 'round';
-    // the glow is seven faint strokes, each a little narrower, that add up to a smooth bell-shaped falloff
-    const glow = Math.max(8, size * 0.05), bell = k => k > 7 ? 0 : Math.exp(-4.5 * k * k / 49);
-    for (let k = 7; k >= 1; k--) {
-      ctx.globalAlpha = 0.3 * (bell(k) - bell(k + 1)); ctx.lineWidth = glow * k / 3.5; line(source, head); ctx.stroke();
+    // text (to the right of it, or below it where the layout is stacked) and of the hero's bottom edge.
+    const source = { x: -10, y: p1.y + (p1.x + 10) * Math.tan(angle) }, incoming = along(source, p1);
+    const at = s => ({ x: source.x + (p1.x - source.x) * s, y: source.y + (p1.y - source.y) * s });
+    const below = textBottom + 28, floorLine = h - 24;
+    const pastText = narrow ? (source.y >= below ? 0 : (below - source.y) / (p1.y - source.y)) : (textRight + 28 - source.x) / (p1.x - source.x);
+    const pastFloor = source.y > floorLine ? (source.y - floorLine) / (source.y - p1.y) : 0;
+    const fadeIn = Math.min(0.9, Math.max(narrow ? 0.02 : 0.5, pastText, pastFloor));
+    const full = Math.min(0.98, fadeIn + (narrow ? 0.28 : 0.2));
+    const core = ramp(source, p1, WHITE, [[0, 0], [fadeIn, 0], [full, 0.9], [1, 1]]);
+    // The glow is one bell-shaped gradient across the beam. A gradient cannot also fade along the beam, so it is
+    // laid in short lengths of rising strength: twelve through the fade-in, two for the rest.
+    const reachOut = Math.max(8, size * 0.05), side = { x: -incoming.y * reachOut, y: incoming.x * reachOut };
+    const halo = ctx.createLinearGradient(p1.x - side.x, p1.y - side.y, p1.x + side.x, p1.y + side.y);
+    for (let k = 0; k <= 12; k++) {
+      const d = k / 6 - 1;
+      halo.addColorStop(k / 12, `rgba(${WHITE},${(0.3 * (Math.exp(-4.5 * d * d) - 0.011) / 0.989).toFixed(3)})`);
     }
-    ctx.globalAlpha = 1; ctx.lineWidth = 2; line(source, head); ctx.stroke();
+    ctx.fillStyle = halo;
+    for (let k = 0; k < 14; k++) {
+      const s0 = k < 12 ? fadeIn + (full - fadeIn) * k / 12 : full + (1 - full) * (k - 12) / 2;
+      const s1 = Math.min(beamOn, k < 12 ? fadeIn + (full - fadeIn) * (k + 1) / 12 : full + (1 - full) * (k - 11) / 2);
+      if (s1 <= s0) break;
+      const a = at(s0), b = at(s1);
+      ctx.globalAlpha = k < 12 ? 0.9 * (k + 0.5) / 12 : 0.9 + 0.1 * (k - 11.5) / 2;
+      shape({ x: a.x - side.x, y: a.y - side.y }, { x: b.x - side.x, y: b.y - side.y }, { x: b.x + side.x, y: b.y + side.y }, { x: a.x + side.x, y: a.y + side.y }); ctx.fill();
+    }
+    ctx.strokeStyle = core; ctx.lineCap = 'round'; ctx.globalAlpha = 1; ctx.lineWidth = 2; line(source, at(beamOn)); ctx.stroke();
     // A little of it glances off the near face, unless that would run almost back along the beam.
     const left = along(A, B), leftOut = { x: -left.y, y: left.x };
-    const incoming = along(source, p1), glance = bounce(incoming, leftOut);
+    const glance = bounce(incoming, leftOut);
     const apart = Math.acos(Math.max(-1, Math.min(1, -(incoming.x * glance.x + incoming.y * glance.y))));
     const away = { x: p1.x + glance.x * size * 0.45, y: p1.y + glance.y * size * 0.45 };
     ctx.strokeStyle = ramp(p1, away, WHITE, [[0, 0.2], [1, 0]]);
@@ -208,7 +226,7 @@
     shape(top, bottom, { x: land + exit * 1.1, y: C.y }, { x: land - exit * 1.1, y: C.y }); ctx.fill();
 
     // a bloom where the light enters and where it leaves
-    for (const [spot, radius, on] of [[p1, size * 0.07, beamOn], [p2, size * 0.14, raysOn]]) {
+    for (const [spot, radius, on] of [[p1, size * 0.07, still ? 1 : clamp((t - 1500) / 250)], [p2, size * 0.14, raysOn]]) {
       const bloom = ctx.createRadialGradient(spot.x, spot.y, 0, spot.x, spot.y, radius);
       bloom.addColorStop(0, 'rgba(255,255,255,.55)'); bloom.addColorStop(0.25, 'rgba(255,255,255,.16)'); bloom.addColorStop(0.6, 'rgba(255,255,255,.035)'); bloom.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.globalAlpha = on; ctx.fillStyle = bloom;
@@ -246,6 +264,7 @@
   const remeasure = () => { measure(); if (still) draw(60000); };
   new MutationObserver(remeasure).observe(stage, { childList: true, characterData: true, subtree: true });
   if (document.fonts) document.fonts.ready.then(remeasure);
+  stage.addEventListener('animationend', remeasure);          // the text rises into place as the page opens
 
   function frame(now) { draw(now - start); raf = requestAnimationFrame(frame); }
   function run() { cancelAnimationFrame(raf); if (!still && onScreen && !document.hidden) raf = requestAnimationFrame(frame); }
