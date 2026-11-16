@@ -11,8 +11,10 @@
   const layer = document.createElement('canvas'), paint = layer.getContext('2d');   // the spectrum is painted here first
   const zone = canvas.closest('.hero') || stage;             // steering works over the whole hero band
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // the glass takes its colour from --band-text, set in home.css
-  const glass = (getComputedStyle(canvas).color.match(/[\d.]+/g) || []).slice(0, 3).join(',') || '255,255,255';
+  // The glass takes the canvas's text colour (--band-text, applied in home.css). Painting one pixel with it
+  // turns whatever notation the browser reports into plain red, green, blue.
+  paint.fillStyle = getComputedStyle(canvas).color; paint.fillRect(0, 0, 1, 1);
+  const glass = Array.from(paint.getImageData(0, 0, 1, 1).data.slice(0, 3)).join(',');
   const WHITE = '255,255,255';
   const stacked = matchMedia('(max-width: 1000px)');          // the same breakpoint home.css uses
   // White light and its spectrum are the picture itself, not theme colours: red to violet.
@@ -27,14 +29,14 @@
   let angle = REST;       // the angle being drawn, eased toward its target
   let steer = null;       // -1 (pointer at the top) to 1 (bottom) while the visitor is steering
   let holdUntil = 0;      // steering lasts until this time
-  let textRight = 0;      // right edge of the hero text, so the beam can stay clear of it
+  let textRight = 0, textBottom = 0;   // right and bottom edge of the hero text, so the beam can stay clear of it
   const start = performance.now();
   const clamp = v => Math.max(0, Math.min(1, v));
 
   function resize() {
     const box = canvas.getBoundingClientRect();
     w = box.width; h = box.height;
-    // sharp on dense screens, but never more than about four million pixels to paint each frame
+    // dense screens get up to two canvas pixels per CSS pixel, fewer where that would pass about four million pixels
     const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1, Math.sqrt(4e6 / Math.max(1, w * h))));
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -47,13 +49,13 @@
   }
 
   function measure() {
-    const left = canvas.getBoundingClientRect().left;
-    let right = 0;
+    const { left, top } = canvas.getBoundingClientRect();
+    let right = 0, bottom = 0;
     stage.querySelectorAll('h1 span, .hero-description, .hero-actions a').forEach(el => {
       const range = document.createRange(); range.selectNodeContents(el);
-      for (const box of range.getClientRects()) right = Math.max(right, box.right);
+      for (const box of range.getClientRects()) { right = Math.max(right, box.right); bottom = Math.max(bottom, box.bottom); }
     });
-    textRight = right - left;
+    textRight = right - left; textBottom = bottom - top;
   }
 
   function target(t) {
@@ -78,7 +80,7 @@
     const p1 = { x: A.x + (B.x - A.x) * u, y: A.y + (B.y - A.y) * u };
     const p2 = { x: A.x + (C.x - A.x) * (u + 0.07), y: A.y + (C.y - A.y) * (u + 0.07) };
     const beamOn = still ? 1 : clamp((t - 250) / 1300);
-    const raysOn = still ? 1 : clamp((t - 1300) / 1100);
+    const raysOn = still ? 1 : clamp((t - 1550) / 1100);     // once the beam has reached the glass
 
     ctx.clearRect(0, 0, w, h);
     const line = (...points) => { ctx.beginPath(); points.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); };
@@ -99,24 +101,34 @@
     ctx.fillStyle = ramp(A, foot, glass, [[0, 0.13], [1, 0.05]]); shape(A, B, C); ctx.fill();
     ctx.fillStyle = ramp(A, B, glass, [[0, 0.17], [1, 0.05]]); shape(A, B, Bi, Ai); ctx.fill();
     ctx.fillStyle = ramp(A, C, glass, [[0, 0.09], [1, 0.02]]); shape(A, C, Ci, Ai); ctx.fill();
-    ctx.fillStyle = 'rgba(0,0,0,.14)'; shape(B, C, Ci, Bi); ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,.09)'; shape(B, C, Ci, Bi); ctx.fill();
     ctx.globalCompositeOperation = 'lighter';
 
-    // incoming white beam: a bright core in a soft glow; it only becomes visible to the right of the hero text
+    // Incoming white beam: a bright core in a soft glow. It only becomes visible once it is clear of the hero
+    // text: to the right of it, or below it where the layout is stacked.
     const source = { x: -10, y: p1.y + (p1.x + 10) * Math.tan(angle) };
     const head = { x: source.x + (p1.x - source.x) * beamOn, y: source.y + (p1.y - source.y) * beamOn };
-    const fadeIn = narrow ? 0.02 : Math.min(0.9, Math.max(0.5, (textRight + 28 - source.x) / (p1.x - source.x)));
-    ctx.strokeStyle = ramp(source, p1, WHITE, [[0, 0], [fadeIn, 0], [narrow ? 0.3 : Math.min(0.98, fadeIn + 0.2), 0.9], [1, 1]]);
+    const below = textBottom + 28;
+    const fadeIn = narrow
+      ? (source.y >= below ? 0.02 : Math.min(0.9, Math.max(0.02, (below - source.y) / (p1.y - source.y))))
+      : Math.min(0.9, Math.max(0.5, (textRight + 28 - source.x) / (p1.x - source.x)));
+    ctx.strokeStyle = ramp(source, p1, WHITE, [[0, 0], [fadeIn, 0], [Math.min(0.98, fadeIn + (narrow ? 0.28 : 0.2)), 0.9], [1, 1]]);
     ctx.lineCap = 'round';
-    for (const [wide, strength] of [[24, 0.035], [12, 0.07], [5.5, 0.2], [2, 1]]) {
-      ctx.globalAlpha = strength; ctx.lineWidth = wide; line(source, head); ctx.stroke();
+    // the glow is seven faint strokes, each a little narrower, that add up to a smooth bell-shaped falloff
+    const glow = Math.max(8, size * 0.05), bell = k => k > 7 ? 0 : Math.exp(-4.5 * k * k / 49);
+    for (let k = 7; k >= 1; k--) {
+      ctx.globalAlpha = 0.3 * (bell(k) - bell(k + 1)); ctx.lineWidth = glow * k / 3.5; line(source, head); ctx.stroke();
     }
-    // a little of it glances off the near face
+    ctx.globalAlpha = 1; ctx.lineWidth = 2; line(source, head); ctx.stroke();
+    // A little of it glances off the near face, unless that would run almost back along the beam.
     const left = along(A, B), leftOut = { x: -left.y, y: left.x };
-    const glance = bounce(along(source, p1), leftOut);
+    const incoming = along(source, p1), glance = bounce(incoming, leftOut);
+    const apart = Math.acos(Math.max(-1, Math.min(1, -(incoming.x * glance.x + incoming.y * glance.y))));
     const away = { x: p1.x + glance.x * size * 0.45, y: p1.y + glance.y * size * 0.45 };
     ctx.strokeStyle = ramp(p1, away, WHITE, [[0, 0.2], [1, 0]]);
-    for (const [wide, strength] of [[6, 0.12], [1.3, 1]]) { ctx.globalAlpha = strength * raysOn; ctx.lineWidth = wide; line(p1, away); ctx.stroke(); }
+    for (const [wide, strength] of [[6, 0.12], [1.3, 1]]) {
+      ctx.globalAlpha = strength * raysOn * clamp((apart - 0.3) / 0.5); ctx.lineWidth = wide; line(p1, away); ctx.stroke();
+    }
 
     // The light leaves the far face over a short stretch of glass and fans out as one continuous glow:
     // white-hot where it leaves the glass, coloured as it spreads, soft at the red and violet edges, with a
@@ -168,11 +180,16 @@
     fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(0.07, 'rgba(0,0,0,.95)'); fade.addColorStop(0.5, 'rgba(0,0,0,.45)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
     paint.globalCompositeOperation = 'destination-in'; paint.fillStyle = fade; paint.fillRect(...box);
     // white-hot at the glass
-    const heat = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, reach * 0.12);
+    const hot = Math.min(reach * 0.12, size * 0.5);
+    const heat = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, hot);
     heat.addColorStop(0, 'rgba(255,255,255,.85)'); heat.addColorStop(1, 'rgba(255,255,255,0)');
-    paint.globalCompositeOperation = 'lighter'; paint.fillStyle = heat; sweep(paint, first, first + width, reach * 0.12); paint.fill();
+    paint.globalCompositeOperation = 'lighter'; paint.fillStyle = heat; sweep(paint, first, first + width, hot); paint.fill();
+    // it thins out toward the bottom edge of the hero instead of being cut off by it
+    const edge = Math.min(90, h * 0.16), floor = paint.createLinearGradient(0, h - edge, 0, h);
+    floor.addColorStop(0, 'rgba(0,0,0,0)'); floor.addColorStop(1, 'rgba(0,0,0,1)');
+    paint.globalCompositeOperation = 'destination-out'; paint.fillStyle = floor; paint.fillRect(box[0], h - edge, box[2], edge);
     // none of it shows inside the glass
-    paint.globalCompositeOperation = 'destination-out'; paint.fillStyle = '#000';
+    paint.fillStyle = '#000';
     paint.beginPath(); paint.moveTo(A.x, A.y); paint.lineTo(B.x, B.y); paint.lineTo(C.x, C.y); paint.closePath(); paint.fill();
     ctx.globalAlpha = raysOn;
     if (bw > 0 && bh > 0) ctx.drawImage(layer, bx, by, bw, bh, ...box);
@@ -183,14 +200,12 @@
     ctx.fillStyle = ramp(p1, p2, WHITE, [[0, 0.75], [1, 0.4]]); shape(p1, top, bottom); ctx.fill();
     ctx.lineWidth = 1.4;
     ctx.strokeStyle = ramp(p1, top, spectrum[0], [[0, 0], [1, 0.75]]); line(p1, top); ctx.stroke();
-    ctx.strokeStyle = ramp(p1, bottom, spectrum[5], [[0, 0], [1, 0.75]]); line(p1, bottom); ctx.stroke();
+    ctx.strokeStyle = ramp(p1, bottom, spectrum[6], [[0, 0], [1, 0.75]]); line(p1, bottom); ctx.stroke();
     // and a little of it bounces off the far face down to the base
     const rebound = bounce(along(p1, p2), { x: face.y, y: -face.x });
-    const land = rebound.y > 0.2 ? p2.x + rebound.x * (C.y - p2.y) / rebound.y : NaN;
-    if (land - exit * 1.3 > B.x && land + exit * 1.3 < C.x) {
-      ctx.fillStyle = ramp(p2, { x: land, y: C.y }, WHITE, [[0, 0.2], [1, 0.03]]);
-      shape(top, bottom, { x: land + exit * 1.3, y: C.y }, { x: land - exit * 1.3, y: C.y }); ctx.fill();
-    }
+    const land = p2.x + rebound.x * (C.y - p2.y) / rebound.y;
+    ctx.fillStyle = ramp(p2, { x: land, y: C.y }, WHITE, [[0, 0.12], [1, 0.02]]);
+    shape(top, bottom, { x: land + exit * 1.1, y: C.y }, { x: land - exit * 1.1, y: C.y }); ctx.fill();
 
     // a bloom where the light enters and where it leaves
     for (const [spot, radius, on] of [[p1, size * 0.07, beamOn], [p2, size * 0.14, raysOn]]) {
@@ -203,13 +218,13 @@
     // The glass, over the light: the inner edge of the bevel, a shine along the lit face, the outline.
     ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.lineJoin = 'round';
     ctx.lineWidth = 1;
-    ctx.strokeStyle = `rgba(${glass},.2)`; shape(Ai, Bi, Ci); ctx.stroke();
-    ctx.strokeStyle = `rgba(${glass},.3)`;
+    ctx.strokeStyle = `rgba(${glass},.15)`; shape(Ai, Bi, Ci); ctx.stroke();
+    ctx.strokeStyle = `rgba(${glass},.18)`;
     for (const [outer, inner] of [[A, Ai], [B, Bi], [C, Ci]]) { line(outer, inner); ctx.stroke(); }
     const bevel = 0.17 * Math.abs((middle.x - A.x) * leftOut.x + (middle.y - A.y) * leftOut.y);
-    const on = (t, depth) => ({ x: A.x + (B.x - A.x) * t - leftOut.x * depth, y: A.y + (B.y - A.y) * t - leftOut.y * depth });
-    ctx.fillStyle = ramp(on(0.14, 0), on(0.7, 0), glass, [[0, 0], [0.3, 0.42], [1, 0]]);
-    shape(on(0.14, bevel * 0.28), on(0.7, bevel * 0.28), on(0.7, bevel * 0.6), on(0.14, bevel * 0.6)); ctx.fill();
+    const shine = (k, depth) => ({ x: A.x + (B.x - A.x) * k - leftOut.x * depth, y: A.y + (B.y - A.y) * k - leftOut.y * depth });
+    ctx.fillStyle = ramp(shine(0.14, 0), shine(0.7, 0), glass, [[0, 0], [0.3, 0.42], [1, 0]]);
+    shape(shine(0.14, bevel * 0.28), shine(0.7, bevel * 0.28), shine(0.7, bevel * 0.6), shine(0.14, bevel * 0.6)); ctx.fill();
     ctx.lineWidth = 1.6; ctx.strokeStyle = ramp(A, foot, glass, [[0, 1], [1, 0.62]]); shape(A, B, C); ctx.stroke();
   }
 
