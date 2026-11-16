@@ -1,75 +1,270 @@
-// Home page only: a beam of white light enters a glass prism and leaves as a slowly breathing spectrum.
-// Stops when the hero is off screen or the tab is hidden; draws one still frame under reduced motion.
+// Home page only: a beam of white light enters a glass prism and leaves as a spectrum.
+// The visitor steers it: moving the pointer (or touching) up and down the hero changes the angle the
+// beam comes in at, and the spectrum swings and widens to match. Left alone, the beam sways by itself.
+// Stops when the hero is off screen or the tab is hidden. Under reduced motion nothing moves by itself:
+// the picture changes only while the visitor moves the pointer, and stays where they leave it.
 (() => {
   const canvas = document.querySelector('.hero-canvas');
   const ctx = canvas && canvas.getContext('2d');
   if (!ctx) return;
+  const stage = canvas.parentElement;
+  const layer = document.createElement('canvas'), paint = layer.getContext('2d');   // the spectrum is painted here first
+  const zone = canvas.closest('.hero') || stage;             // steering works over the whole hero band
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const glassColor = getComputedStyle(canvas).color;        // --band-text, set in home.css
+  const WHITE = '255,255,255';
+  // The glass takes the canvas's text colour (--band-text, applied in home.css) as plain red, green, blue.
+  // Browsers report it as rgb(); for any other notation one pixel is painted with it and read back.
+  const reported = getComputedStyle(canvas).color, plain = /^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(reported);
+  let glass = plain ? plain.slice(1).join(',') : '';
+  if (!glass) {
+    try {
+      paint.fillStyle = reported; paint.fillRect(0, 0, 1, 1);
+      glass = Array.from(paint.getImageData(0, 0, 1, 1).data.slice(0, 3)).join(',');
+    } catch (error) { glass = WHITE; }
+  }
   const stacked = matchMedia('(max-width: 1000px)');          // the same breakpoint home.css uses
-  // White light and its spectrum are the picture itself, not theme colours.
-  const colors = ['255,107,94', '255,162,76', '255,217,90', '123,224,138', '95,216,255', '111,140,255', '181,140,255'];
+  // White light and its spectrum are the picture itself, not theme colours: red to violet.
+  const spectrum = [[255, 92, 80], [255, 158, 66], [255, 226, 92], [108, 232, 138], [80, 214, 255], [104, 132, 255], [186, 128, 255]];
+  const shade = f => {
+    const x = clamp(f) * (spectrum.length - 1), i = Math.min(spectrum.length - 2, Math.floor(x));
+    return spectrum[i].map((v, j) => Math.round(v + (spectrum[i + 1][j] - v) * (x - i)));
+  };
+  const REST = 0.17;      // the beam's resting angle, in radians above horizontal
+  const SWING = 0.42;     // how far the pointer can tilt it either way
   let w = 0, h = 0, raf = 0, onScreen = true;
+  let angle = REST;       // the angle being drawn, eased toward its target
+  let steer = null;       // -1 (pointer at the top) to 1 (bottom) while the visitor is steering
+  let holdUntil = 0;      // steering lasts until this time
+  let textRight = 0, textBottom = 0;   // right and bottom edge of the hero text, so the beam can stay clear of it
   const start = performance.now();
   const clamp = v => Math.max(0, Math.min(1, v));
 
   function resize() {
     const box = canvas.getBoundingClientRect();
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
     w = box.width; h = box.height;
+    // dense screens get up to two canvas pixels per CSS pixel, fewer where that would pass about four million pixels
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1, Math.sqrt(4e6 / Math.max(1, w * h))));
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (still) draw(60000);
+    // the glow is soft, so its layer holds one pixel per CSS pixel however dense the screen is, and fewer on huge ones
+    const coarse = Math.min(1, Math.sqrt(9e5 / Math.max(1, w * h)));
+    layer.width = Math.max(1, Math.round(w * coarse)); layer.height = Math.max(1, Math.round(h * coarse));
+    paint.setTransform(layer.width / w, 0, 0, layer.height / h, 0, 0);
+    measure();
+    draw(still ? 60000 : performance.now() - start);     // straight away: sizing a canvas clears it
+  }
+
+  function measure() {
+    const { left, top } = canvas.getBoundingClientRect();
+    let right = 0, bottom = 0;
+    stage.querySelectorAll('h1 span, .hero-description, .hero-actions a').forEach(el => {
+      const range = document.createRange(); range.selectNodeContents(el);
+      for (const box of range.getClientRects()) { right = Math.max(right, box.right); bottom = Math.max(bottom, box.bottom); }
+    });
+    textRight = right - left; textBottom = bottom - top;
+  }
+
+  function target(t) {
+    if (still) return steer === null ? REST : steer * SWING;
+    if (steer !== null && performance.now() < holdUntil) return steer * SWING;
+    return REST + Math.sin(t * 0.0007) * 0.13;
   }
 
   function draw(t) {
+    if (!w || !h) return;
+    const goal = target(t);
+    angle = still ? goal : angle + (goal - angle) * 0.09;
+    const tilt = angle - REST;
+
     const narrow = stacked.matches;
     const size = narrow ? Math.min(w * 0.44, 190) : Math.min(h * 0.58, w * 0.25);
     const cx = narrow ? w * 0.46 : w * 0.67;
     const cy = narrow ? h - size * 0.66 : h * 0.52;
     const half = size * 0.56, tall = size;
     const A = { x: cx, y: cy - tall / 2 }, B = { x: cx - half, y: cy + tall / 2 }, C = { x: cx + half, y: cy + tall / 2 };
-    const sway = still ? 0 : Math.sin(t * 0.0004) * 0.03;
-    const u = 0.5 + (still ? 0 : Math.sin(t * 0.0005) * 0.025);
+    const u = 0.5 + tilt * 0.12;
     const p1 = { x: A.x + (B.x - A.x) * u, y: A.y + (B.y - A.y) * u };
     const p2 = { x: A.x + (C.x - A.x) * (u + 0.07), y: A.y + (C.y - A.y) * (u + 0.07) };
     const beamOn = still ? 1 : clamp((t - 250) / 1300);
-    const raysOn = still ? 1 : clamp((t - 1300) / 1100);
+    const raysOn = still ? 1 : clamp((t - 1550) / 1100);     // once the beam has reached the glass
 
     ctx.clearRect(0, 0, w, h);
+    const line = (...points) => { ctx.beginPath(); points.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); };
+    const shape = (...points) => { line(...points); ctx.closePath(); };
+    const ramp = (from, to, colour, stops) => {
+      const gradient = ctx.createLinearGradient(from.x, from.y, to.x, to.y);
+      stops.forEach(([at, alpha]) => gradient.addColorStop(at, `rgba(${colour},${alpha})`));
+      return gradient;
+    };
+    const along = (p, q) => { const d = Math.hypot(q.x - p.x, q.y - p.y) || 1; return { x: (q.x - p.x) / d, y: (q.y - p.y) / d }; };
+    const bounce = (d, n) => { const k = 2 * (d.x * n.x + d.y * n.y); return { x: d.x - k * n.x, y: d.y - k * n.y }; };
+
+    // The glass, under the light: a cut block with a bevel all round, lit from the left.
+    const middle = { x: (A.x + B.x + C.x) / 3, y: (A.y + B.y + C.y) / 3 }, foot = { x: cx, y: C.y };
+    const inset = v => ({ x: v.x + (middle.x - v.x) * 0.17, y: v.y + (middle.y - v.y) * 0.17 });
+    const Ai = inset(A), Bi = inset(B), Ci = inset(C);
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    ctx.fillStyle = ramp(A, foot, glass, [[0, 0.13], [1, 0.05]]); shape(A, B, C); ctx.fill();
+    ctx.fillStyle = ramp(A, B, glass, [[0, 0.17], [1, 0.05]]); shape(A, B, Bi, Ai); ctx.fill();
+    ctx.fillStyle = ramp(A, C, glass, [[0, 0.09], [1, 0.02]]); shape(A, C, Ci, Ai); ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,.09)'; shape(B, C, Ci, Bi); ctx.fill();
     ctx.globalCompositeOperation = 'lighter';
 
-    // incoming white beam
-    const x0 = -10, y0 = p1.y + (p1.x - x0) * Math.tan(0.17 + sway);
-    const ex = x0 + (p1.x - x0) * beamOn, ey = y0 + (p1.y - y0) * beamOn;
-    const g = ctx.createLinearGradient(x0, y0, p1.x, p1.y);
-    g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(narrow ? 0.02 : 0.62, 'rgba(255,255,255,0)'); g.addColorStop(narrow ? 0.3 : 0.84, 'rgba(255,255,255,.9)'); g.addColorStop(1, 'rgba(255,255,255,1)');
-    ctx.strokeStyle = g; ctx.lineCap = 'round';
-    for (const [lw, a] of [[18, 0.06], [7, 0.16], [2.2, 1]]) { ctx.globalAlpha = a; ctx.lineWidth = lw; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(ex, ey); ctx.stroke(); }
-    ctx.globalAlpha = 0.45 * raysOn; ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff';
-    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+    // Incoming white beam: a bright core in a soft glow. It only becomes visible once it is clear of the hero
+    // text (to the right of it, or below it where the layout is stacked) and of the hero's bottom edge.
+    const source = { x: -10, y: p1.y + (p1.x + 10) * Math.tan(angle) }, incoming = along(source, p1);
+    const at = s => ({ x: source.x + (p1.x - source.x) * s, y: source.y + (p1.y - source.y) * s });
+    const below = textBottom + 28, floorLine = h - 24;
+    const pastText = narrow ? (source.y >= below ? 0 : (below - source.y) / (p1.y - source.y)) : (textRight + 28 - source.x) / (p1.x - source.x);
+    const pastFloor = source.y > floorLine ? (source.y - floorLine) / (source.y - p1.y) : 0;
+    const fadeIn = Math.min(0.9, Math.max(narrow ? 0.02 : 0.5, pastText, pastFloor));
+    const full = Math.min(0.98, fadeIn + (narrow ? 0.28 : 0.2));
+    const core = ramp(source, p1, WHITE, [[0, 0], [fadeIn, 0], [full, 0.9], [1, 1]]);
+    // The glow is one bell-shaped gradient across the beam. A gradient cannot also fade along the beam, so it is
+    // laid in short lengths of rising strength: twelve through the fade-in, two for the rest.
+    const reachOut = Math.max(8, size * 0.05), side = { x: -incoming.y * reachOut, y: incoming.x * reachOut };
+    const halo = ctx.createLinearGradient(p1.x - side.x, p1.y - side.y, p1.x + side.x, p1.y + side.y);
+    for (let k = 0; k <= 12; k++) {
+      const d = k / 6 - 1;
+      halo.addColorStop(k / 12, `rgba(${WHITE},${(0.3 * (Math.exp(-4.5 * d * d) - 0.011) / 0.989).toFixed(3)})`);
+    }
+    ctx.fillStyle = halo;
+    for (let k = 0; k < 14; k++) {
+      const s0 = k < 12 ? fadeIn + (full - fadeIn) * k / 12 : full + (1 - full) * (k - 12) / 2;
+      const s1 = Math.min(beamOn, k < 12 ? fadeIn + (full - fadeIn) * (k + 1) / 12 : full + (1 - full) * (k - 11) / 2);
+      if (s1 <= s0) break;
+      const a = at(s0), b = at(s1);
+      ctx.globalAlpha = k < 12 ? 0.9 * (k + 0.5) / 12 : 0.9 + 0.1 * (k - 11.5) / 2;
+      shape({ x: a.x - side.x, y: a.y - side.y }, { x: b.x - side.x, y: b.y - side.y }, { x: b.x + side.x, y: b.y + side.y }, { x: a.x + side.x, y: a.y + side.y }); ctx.fill();
+    }
+    ctx.strokeStyle = core; ctx.lineCap = 'round'; ctx.globalAlpha = 1; ctx.lineWidth = 2; line(source, at(beamOn)); ctx.stroke();
+    // A little of it glances off the near face, unless that would run almost back along the beam.
+    const left = along(A, B), leftOut = { x: -left.y, y: left.x };
+    const glance = bounce(incoming, leftOut);
+    const apart = Math.acos(Math.max(-1, Math.min(1, -(incoming.x * glance.x + incoming.y * glance.y))));
+    const away = { x: p1.x + glance.x * size * 0.45, y: p1.y + glance.y * size * 0.45 };
+    ctx.strokeStyle = ramp(p1, away, WHITE, [[0, 0.2], [1, 0]]);
+    for (const [wide, strength] of [[6, 0.12], [1.3, 1]]) {
+      ctx.globalAlpha = strength * raysOn * clamp((apart - 0.3) / 0.5); ctx.lineWidth = wide; line(p1, away); ctx.stroke();
+    }
 
-    // the spectrum fanning out of the far face
-    const reach = narrow ? w * 0.9 : w * 0.62;
-    const spread = 0.058 + (still ? 0 : Math.sin(t * 0.0006) * 0.01);
-    colors.forEach((c, i) => {
-      const a = -0.03 + sway * 0.6 + i * spread, d = spread * 0.62;
-      const far = k => ({ x: p2.x + Math.cos(a + k) * reach, y: p2.y + Math.sin(a + k) * reach });
-      const f1 = far(-d), f2 = far(d), mid = far(0);
-      const fill = ctx.createLinearGradient(p2.x, p2.y, mid.x, mid.y);
-      fill.addColorStop(0, `rgba(${c},.95)`); fill.addColorStop(0.5, `rgba(${c},.42)`); fill.addColorStop(1, `rgba(${c},0)`);
-      ctx.globalAlpha = raysOn * (0.62 + (still ? 0 : 0.2 * Math.sin(t * 0.0013 + i * 0.9)));
-      ctx.fillStyle = fill;
-      ctx.beginPath(); ctx.moveTo(p2.x, p2.y); ctx.lineTo(f1.x, f1.y); ctx.lineTo(f2.x, f2.y); ctx.closePath(); ctx.fill();
-    });
+    // The light leaves the far face over a short stretch of glass and fans out as one continuous glow:
+    // white-hot where it leaves the glass, coloured as it spreads, soft at the red and violet edges, with a
+    // wider, fainter halo around it. It is painted on its own layer and added to the picture.
+    const faceLength = Math.hypot(C.x - A.x, C.y - A.y);
+    const face = { x: (C.x - A.x) / faceLength, y: (C.y - A.y) / faceLength };
+    const exit = size * 0.05;
+    const reach = narrow ? w * 0.95 : w * 0.72;
+    const spread = 0.058 + Math.abs(tilt) * 0.05 + (still ? 0 : Math.sin(t * 0.0006) * 0.008);
+    const width = spread * 7.2, first = -0.03 - tilt * 0.6 - spread * 0.6;
+    const from = first - width * 0.3, across = width * 1.6;                 // the halo's wider sweep
+    const back = exit / width, centre = first + width / 2;                  // the fan's tip sits just inside the glass
+    const tip = { x: p2.x - Math.cos(centre) * back, y: p2.y - Math.sin(centre) * back };
+    // colour and strength at an angle: f runs 0 (red) to 1 (violet) across the spectrum itself
+    const light = f => {
+      const side = clamp(Math.min(f, 1 - f) / 0.16), core = side * side * (3 - 2 * side);
+      const halo = Math.sin(Math.PI * clamp((f + 0.3) / 1.6));
+      const flicker = still ? 1 : 0.88 + 0.12 * Math.sin(t * 0.0013 + f * 6);
+      return `rgba(${shade((f - 0.1) / 0.8)},${(Math.min(1, 0.95 * core + 0.16 * halo) * flicker).toFixed(3)})`;
+    };
+    const wall = Math.atan2(face.y, face.x) - 0.05;                         // light cannot leave along or behind the face
+    const sweep = (context, a, b, radius) => { context.beginPath(); context.moveTo(tip.x, tip.y); context.arc(tip.x, tip.y, radius, a, b); context.closePath(); };
 
-    // the glass
-    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
-    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.closePath();
-    ctx.fillStyle = glassColor; ctx.globalAlpha = 0.1; ctx.fill();
-    ctx.lineJoin = 'round'; ctx.lineWidth = 1.6; ctx.strokeStyle = glassColor; ctx.globalAlpha = 0.9; ctx.stroke();
-    ctx.globalAlpha = 1;
+    // only the box the fan can reach is masked and copied; the box is whole layer pixels
+    const qx = layer.width / w, qy = layer.height / h;
+    const bx = Math.max(0, Math.floor((tip.x - 4) * qx)), bw = layer.width - bx;
+    const by = Math.max(0, Math.floor((Math.min(tip.y, tip.y + Math.sin(from) * reach) - 4) * qy));
+    const bh = Math.min(layer.height, Math.ceil((Math.max(tip.y, tip.y + Math.sin(from + across) * reach) + 4) * qy)) - by;
+    const box = [bx / qx, by / qy, bw / qx, bh / qy];
+    paint.globalCompositeOperation = 'source-over'; paint.globalAlpha = 1;
+    paint.clearRect(0, 0, w, h);
+    if (paint.createConicGradient) {
+      const cone = paint.createConicGradient(from, tip.x, tip.y);
+      for (let k = 0; k <= 48; k++) cone.addColorStop(k / 48 * across / (Math.PI * 2), light(k / 48 * 1.6 - 0.3));
+      paint.fillStyle = cone; sweep(paint, from, Math.min(from + across, wall), reach); paint.fill();
+    } else {
+      // older browsers: the same fan as slices a few pixels wide at the far end (thinner ones leave hairlines)
+      const slices = Math.max(12, Math.min(240, Math.round(across * reach / 6)));
+      paint.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < slices; k++) {
+        const a = from + across * k / slices;
+        if (a >= wall) break;
+        paint.fillStyle = light((k + 0.5) / slices * 1.6 - 0.3);
+        sweep(paint, a, Math.min(from + across * (k + 1) / slices, wall), reach); paint.fill();
+      }
+    }
+    // it fades with distance
+    const fade = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, reach);
+    fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(0.07, 'rgba(0,0,0,.95)'); fade.addColorStop(0.5, 'rgba(0,0,0,.45)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
+    paint.globalCompositeOperation = 'destination-in'; paint.fillStyle = fade; paint.fillRect(...box);
+    // white-hot at the glass
+    const hot = Math.min(reach * 0.12, size * 0.5);
+    const heat = paint.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, hot);
+    heat.addColorStop(0, 'rgba(255,255,255,.85)'); heat.addColorStop(1, 'rgba(255,255,255,0)');
+    paint.globalCompositeOperation = 'lighter'; paint.fillStyle = heat; sweep(paint, first, first + width, hot); paint.fill();
+    // it thins out toward the bottom edge of the hero instead of being cut off by it
+    const edge = Math.min(90, h * 0.16), floor = paint.createLinearGradient(0, h - edge, 0, h);
+    floor.addColorStop(0, 'rgba(0,0,0,0)'); floor.addColorStop(1, 'rgba(0,0,0,1)');
+    paint.globalCompositeOperation = 'destination-out'; paint.fillStyle = floor; paint.fillRect(box[0], h - edge, box[2], edge);
+    // none of it shows inside the glass
+    paint.fillStyle = '#000';
+    paint.beginPath(); paint.moveTo(A.x, A.y); paint.lineTo(B.x, B.y); paint.lineTo(C.x, C.y); paint.closePath(); paint.fill();
+    ctx.globalAlpha = raysOn;
+    if (bw > 0 && bh > 0) ctx.drawImage(layer, bx, by, bw, bh, ...box);
+
+    // inside the glass the white beam widens toward the far face and starts to split: red above, violet below
+    const lip = k => ({ x: p2.x + face.x * k * exit, y: p2.y + face.y * k * exit }), top = lip(-0.5), bottom = lip(0.5);
+    ctx.globalAlpha = raysOn;
+    ctx.fillStyle = ramp(p1, p2, WHITE, [[0, 0.75], [1, 0.4]]); shape(p1, top, bottom); ctx.fill();
+    ctx.lineWidth = 1.4;
+    ctx.strokeStyle = ramp(p1, top, spectrum[0], [[0, 0], [1, 0.75]]); line(p1, top); ctx.stroke();
+    ctx.strokeStyle = ramp(p1, bottom, spectrum[6], [[0, 0], [1, 0.75]]); line(p1, bottom); ctx.stroke();
+    // and a little of it bounces off the far face down to the base
+    const rebound = bounce(along(p1, p2), { x: face.y, y: -face.x });
+    const land = p2.x + rebound.x * (C.y - p2.y) / rebound.y;
+    ctx.fillStyle = ramp(p2, { x: land, y: C.y }, WHITE, [[0, 0.12], [1, 0.02]]);
+    shape(top, bottom, { x: land + exit * 1.1, y: C.y }, { x: land - exit * 1.1, y: C.y }); ctx.fill();
+
+    // a bloom where the light enters and where it leaves
+    for (const [spot, radius, on] of [[p1, size * 0.07, still ? 1 : clamp((t - 1500) / 250)], [p2, size * 0.14, raysOn]]) {
+      const bloom = ctx.createRadialGradient(spot.x, spot.y, 0, spot.x, spot.y, radius);
+      bloom.addColorStop(0, 'rgba(255,255,255,.55)'); bloom.addColorStop(0.25, 'rgba(255,255,255,.16)'); bloom.addColorStop(0.6, 'rgba(255,255,255,.035)'); bloom.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.globalAlpha = on; ctx.fillStyle = bloom;
+      ctx.beginPath(); ctx.arc(spot.x, spot.y, radius, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // The glass, over the light: the inner edge of the bevel, a shine along the lit face, the outline.
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.lineJoin = 'round';
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(${glass},.15)`; shape(Ai, Bi, Ci); ctx.stroke();
+    ctx.strokeStyle = `rgba(${glass},.18)`;
+    for (const [outer, inner] of [[A, Ai], [B, Bi], [C, Ci]]) { line(outer, inner); ctx.stroke(); }
+    const bevel = 0.17 * Math.abs((middle.x - A.x) * leftOut.x + (middle.y - A.y) * leftOut.y);
+    const shine = (k, depth) => ({ x: A.x + (B.x - A.x) * k - leftOut.x * depth, y: A.y + (B.y - A.y) * k - leftOut.y * depth });
+    ctx.fillStyle = ramp(shine(0.14, 0), shine(0.7, 0), glass, [[0, 0], [0.3, 0.42], [1, 0]]);
+    shape(shine(0.14, bevel * 0.28), shine(0.7, bevel * 0.28), shine(0.7, bevel * 0.6), shine(0.14, bevel * 0.6)); ctx.fill();
+    ctx.lineWidth = 1.6; ctx.strokeStyle = ramp(A, foot, glass, [[0, 1], [1, 0.62]]); shape(A, B, C); ctx.stroke();
   }
+
+  // Steering. Touch scrolling is left alone: a touch steers for three seconds after its last movement,
+  // a mouse steers until shortly after it leaves the hero.
+  function steerTo(event) {
+    const box = canvas.getBoundingClientRect();
+    if (!box.height) return;
+    steer = clamp((event.clientY - box.top) / box.height) * 2 - 1;
+    holdUntil = performance.now() + (event.pointerType === 'mouse' ? 3600000 : 3000);
+    if (still) draw(60000);
+  }
+  function release(event) { if (event.pointerType === 'mouse') holdUntil = performance.now() + 700; }
+  zone.addEventListener('pointermove', steerTo);
+  zone.addEventListener('pointerdown', steerTo);
+  zone.addEventListener('pointerleave', release);
+
+  // The text changes width when the fonts arrive and when the language is switched.
+  const remeasure = () => { measure(); if (still) draw(60000); };
+  new MutationObserver(remeasure).observe(stage, { childList: true, characterData: true, subtree: true });
+  if (document.fonts) document.fonts.ready.then(remeasure);
+  stage.addEventListener('animationend', remeasure);          // the text rises into place as the page opens
 
   function frame(now) { draw(now - start); raf = requestAnimationFrame(frame); }
   function run() { cancelAnimationFrame(raf); if (!still && onScreen && !document.hidden) raf = requestAnimationFrame(frame); }
