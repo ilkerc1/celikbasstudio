@@ -2,7 +2,7 @@
 
 **Celikbas Studio** resmi çift dilli (İngilizce & Türkçe) web sitesi. Bu repo sitenin kaynağıdır; `main` dalı canlı siteye otomatik yayınlanır.
 
-Oyunlar: **Prizmic**, **Ravel**, **The Coffee Stand**, **Coffee Stand: Daily Orders**.
+Oyunlar: **Prizmic**, **Ravel**, **The Coffee Stand**, **Coffee Stand: Daily Orders**, **Grumpy Lift**, **Homedawn**, **Tiltumi** (son üçü "Yakında"). Ana sayfadaki "Mystery game" kartı adı açıklanmayan bir oyunu temsil eder; adını bu repoya yazmayın (repo herkese açık).
 
 ## Dosya Yapısı
 
