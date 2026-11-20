@@ -148,6 +148,9 @@ h2{font-size:clamp(32px,3.8vw,50px);line-height:1.1;letter-spacing:-.02em}
 .game-mystery .game-number{color:var(--band-muted)}
 .game-mystery .game-description{flex:0 1 auto;max-width:52ch;color:var(--band-muted)}
 .game-mystery .game-description+.game-meta{border-top-color:var(--band-line);color:var(--band-muted)}
+.game-soon{grid-column:1/-1;background:transparent;border-style:dashed}
+.game-soon .game-body{padding:30px 40px}
+.game-soon .game-description{max-width:60ch}
 .game-body{display:flex;flex-direction:column;flex:1;padding:26px 28px 24px}
 .game-tags{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
 .game-tags span:last-child{padding:4px 10px;border:1px solid var(--line);border-radius:999px;font-size:11px;letter-spacing:.08em;color:var(--ink-soft);white-space:nowrap}
@@ -285,7 +288,7 @@ html[data-language] .document>section{margin-top:0;padding-top:0;border-top:0}
   .studio-values{grid-template-columns:1fr;gap:14px}
   .daily-inner{grid-template-columns:1fr;gap:8px}
   .puzzles{grid-template-columns:1fr}
-  .game-body,.game-mystery .game-body{padding:22px 20px 20px}
+  .game-body,.game-mystery .game-body,.game-soon .game-body{padding:22px 20px 20px}
   .contact-resource{padding:22px 20px}
   .page-nav{flex-direction:column;align-items:flex-start;gap:0;padding-block:14px 6px}
   .contents ul{grid-template-columns:1fr}
