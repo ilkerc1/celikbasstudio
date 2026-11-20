@@ -9,7 +9,7 @@ seçti): Grumpy Lift, Homedawn, Tiltumi. Codex'te geliştirilen oyun adı verilm
 ### Yapılanlar
 - **Repo yerelde**: `ilkerc1/celikbasstudio` → `/Volumes/KIOXIA/Uygulamalar/celikbasstudio` (kullanıcının seçtiği konum).
   Daha önce bu Mac'te hiç klonu yoktu.
-- **Dal `feature/new-games-cards`**, yalnız yerel commit. `main`'e merge/push YOK: `.github/workflows/deploy.yml` her `main`
+- **Dal `feature/new-games-cards`** (`56c7cf9`), GitHub'a gönderildi, PR #9. `main`'e merge YOK: `.github/workflows/deploy.yml` her `main`
   push'unda FTP ile canlıya yüklüyor; kullanıcı "siteyi güncellemeden" dedi. Dal push'u deploy etmez ama kullanıcı
   onayı olmadan o da yapılmadı (yayınlanmamış oyun adları herkese açık repoya düşer).
 - **`index.html`**: 3 yeni kart (`#grumpy-lift`, `#homedawn`, `#tiltumi`), Daily Orders'tan sonra ve Mystery'den önce.
@@ -41,7 +41,8 @@ seçti): Grumpy Lift, Homedawn, Tiltumi. Codex'te geliştirilen oyun adı verilm
   (o renkler yalnız lacivert Mystery kartında). Bakılmayanlar: 820–1000 px arası genişlik.
 
 ### Açık
-- **Canlıya almak** kullanıcının onayına bağlı: `git push -u origin feature/new-games-cards` → PR → `main`'e merge = canlı.
+- **Dal GitHub'da, PR açık:** https://github.com/ilkerc1/celikbasstudio/pull/9 (kullanıcı "pushla" dedi, 2026-11-20).
+  CI kontrolü yok, birleştirilebilir (CLEAN). **Canlıya almak = PR'ı `main`'e merge etmek**; kullanıcı onayı bekleniyor.
 - **Tiltumi adı geçici** (Tiltumi README: "pending name clearance"). Ad değişirse kart + dizin + meta + TR metinleri güncellenmeli.
 - Grumpy Lift için bu sitede gizlilik/destek sayfaları henüz yok. Hazır taslaklar Grumpy Lift `web sitesi/` klasöründe, ama
   yer tutucular dolu değil ve gizlilik metni Unity IAP veri kararına bağlı (Grumpy Lift PROGRESS v0.27). Mağazaya
