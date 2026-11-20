@@ -12,6 +12,7 @@ Derleme adımı yoktur; dosyalar olduğu gibi yayınlanır.
 - [`terms.html`](./terms.html) — Kullanım Koşulları
 - [`prizmic/privacy.html`](./prizmic/privacy.html) — Prizmic gizlilik ve destek
 - [`ravel/index.html`](./ravel/index.html) — Ravel oyun sayfası
+- [`homedawn/index.html`](./homedawn/index.html) — Homedawn oyun sayfası (çok yakında)
 - [`ravel/privacy.html`](./ravel/privacy.html) · [`ravel/support.html`](./ravel/support.html) · [`ravel/terms.html`](./ravel/terms.html)
 - [`coffee-stand/privacy.html`](./coffee-stand/privacy.html) · [`coffee-stand/support.html`](./coffee-stand/support.html)
 - [`coffee-stand-daily-orders/privacy.html`](./coffee-stand-daily-orders/privacy.html) · [`coffee-stand-daily-orders/support.html`](./coffee-stand-daily-orders/support.html)
@@ -24,4 +25,4 @@ Derleme adımı yoktur; dosyalar olduğu gibi yayınlanır.
 
 Dil geçişi (EN / TR) ve çeviriler her sayfanın sonundaki `<script>` bloğundadır.
 
-`assets/site.css` değiştiğinde sayfalardaki `site.css?v=1` sürüm numarasını artırın; aksi halde ziyaretçiler eski stili önbellekten görebilir.
+`assets/site.css` değiştiğinde sayfalardaki `site.css?v=…` sürüm numarasını artırın; aksi halde ziyaretçiler eski stili önbellekten görebilir.
