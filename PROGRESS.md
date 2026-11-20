@@ -1,6 +1,28 @@
 # PROGRESS — celikbasstudio.com
 
-## 2026-11-20 — Yeni oyun kartları (Grumpy Lift, Homedawn, Tiltumi); canlıya ÇIKMADI
+## 2026-11-21 — Grumpy Lift gizlilik ve destek sayfaları (yerel dal, henüz canlı değil)
+
+Kullanıcı (Grumpy Lift oturumu): gizlilik politikası adresi için "celikbasstudio.com", destek e-postası
+`ilker_celikbas@hotmail.com`. Mağaza formları (App Store / Google Play) gizlilik adresini zorunlu istiyor.
+
+### Yapılanlar
+- **`grumpy-lift/privacy.html`, `grumpy-lift/support.html`** (yeni): Coffee Stand sayfalarının iskeleti (başlık, sayfa
+  menüsü, EN/TR bölümleri, dil betiği, `site.css?v=5`), içerik Grumpy Lift deposundaki `web sitesi/privacy.html` ve
+  `support.html`'den (D36 sonrası "veri toplanmıyor" metni; yürürlük 21 Kasım 2026). Destek SSS'leri `<details>` yerine
+  sitenin `h3 + p` düzeninde. `theme-color` `#141b19` (kart rengi).
+- **`index.html`**: Grumpy Lift kartına Destek / Gizlilik bağlantıları (Coffee Stand kartıyla aynı `game-actions`
+  düzeni, `data-localized-href`); "Coming soon" etiketi duruyor.
+- `README.md` dosya listesine iki sayfa.
+
+### Doğrulama
+- Yerel sunucu (`python3 -m http.server 8781`), yerleşik tarayıcı: iki sayfa EN/TR doğru başlık ve içerik, konsol
+  hatası yok; 375 px'te yatay kaydırma yok; ana sayfa kart bağlantıları TR'de `#tr`'ye gidiyor.
+
+### Açık
+- Dal `feature/grumpy-lift-pages` yalnız yerelde. Canlıya almak için: push → PR → merge (`deploy.yml` FTP), sahip onayıyla.
+- Canlıdan sonra Play Console ve App Store Connect'e `https://celikbasstudio.com/grumpy-lift/privacy.html` girilecek.
+
+## 2026-11-20 — Yeni oyun kartları (Grumpy Lift, Homedawn, Tiltumi); CANLIDA
 
 Kullanıcı: "siteyi güncellemeden yeni oyunları ekle, codex'teki oyunu da gizli oyun olarak tut." Seçilen oyunlar (kullanıcı
 seçti): Grumpy Lift, Homedawn, Tiltumi. Codex'te geliştirilen oyun adı verilmeden mevcut **"Mystery game"** kartında kalıyor.
@@ -9,9 +31,9 @@ seçti): Grumpy Lift, Homedawn, Tiltumi. Codex'te geliştirilen oyun adı verilm
 ### Yapılanlar
 - **Repo yerelde**: `ilkerc1/celikbasstudio` → `/Volumes/KIOXIA/Uygulamalar/celikbasstudio` (kullanıcının seçtiği konum).
   Daha önce bu Mac'te hiç klonu yoktu.
-- **Dal `feature/new-games-cards`** (`56c7cf9`), GitHub'a gönderildi, PR #9. `main`'e merge YOK: `.github/workflows/deploy.yml` her `main`
-  push'unda FTP ile canlıya yüklüyor; kullanıcı "siteyi güncellemeden" dedi. Dal push'u deploy etmez ama kullanıcı
-  onayı olmadan o da yapılmadı (yayınlanmamış oyun adları herkese açık repoya düşer).
+- **Yayın akışı**: önce yalnız yerel dal (kullanıcı "siteyi güncellemeden" dedi) → kullanıcı "pushla" → dal push + PR
+  [#9](https://github.com/ilkerc1/celikbasstudio/pull/9) → kullanıcı "Merge et, canlıya al" → merge commit `1cb7d2a`
+  (`main`). `deploy.yml` FTP koşusu 44666838272 başarılı.
 - **`index.html`**: 3 yeni kart (`#grumpy-lift`, `#homedawn`, `#tiltumi`), Daily Orders'tan sonra ve Mystery'den önce.
   Mevcut kartlarla aynı yapı: `data-i18n` metinler + TR karşılıkları betikteki `translations.tr` içinde, `data-i18n-alt`,
   durum etiketi "Coming soon" (`dailyStatus` anahtarı yeniden kullanıldı), alt satırda tür + `iOS / Android`.
@@ -33,6 +55,8 @@ seçti): Grumpy Lift, Homedawn, Tiltumi. Codex'te geliştirilen oyun adı verilm
 - `README.md` oyun listesi güncellendi.
 
 ### Doğrulama
+- **Canlı** (https://celikbasstudio.com): üç kart, `game-mystery-paired`, "Seven worlds", `site.css?v=5` HTML'de; üç ikon
+  200 döndü; `site.css?v=5` yeni kuralları içeriyor; tarayıcıda 7 kart görseli yüklendi, konsol hatası yok.
 - Yerel sunucu (`python3 -m http.server 8780`), yerleşik tarayıcı: 1280 px ve 375 px; yatay kaydırma yok (scrollWidth 375);
   EN↔TR geçişi yeni metinleri, alt'ları, başlığı ve meta'yı doğru çeviriyor; konsol hatası yok; Mystery ile Tiltumi görsel
   yükseklikleri eşit (310,8 px), gövde boşlukları eşit.
@@ -41,8 +65,6 @@ seçti): Grumpy Lift, Homedawn, Tiltumi. Codex'te geliştirilen oyun adı verilm
   (o renkler yalnız lacivert Mystery kartında). Bakılmayanlar: 820–1000 px arası genişlik.
 
 ### Açık
-- **Dal GitHub'da, PR açık:** https://github.com/ilkerc1/celikbasstudio/pull/9 (kullanıcı "pushla" dedi, 2026-11-20).
-  CI kontrolü yok, birleştirilebilir (CLEAN). **Canlıya almak = PR'ı `main`'e merge etmek**; kullanıcı onayı bekleniyor.
 - **Tiltumi adı geçici** (Tiltumi README: "pending name clearance"). Ad değişirse kart + dizin + meta + TR metinleri güncellenmeli.
 - Grumpy Lift için bu sitede gizlilik/destek sayfaları henüz yok. Hazır taslaklar Grumpy Lift `web sitesi/` klasöründe, ama
   yer tutucular dolu değil ve gizlilik metni Unity IAP veri kararına bağlı (Grumpy Lift PROGRESS v0.27). Mağazaya
