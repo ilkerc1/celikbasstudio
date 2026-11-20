@@ -1,5 +1,27 @@
 # PROGRESS — celikbasstudio.com
 
+## 2026-11-21 — Grumpy Lift gizlilik ve destek sayfaları (yerel dal, henüz canlı değil)
+
+Kullanıcı (Grumpy Lift oturumu): gizlilik politikası adresi için "celikbasstudio.com", destek e-postası
+`ilker_celikbas@hotmail.com`. Mağaza formları (App Store / Google Play) gizlilik adresini zorunlu istiyor.
+
+### Yapılanlar
+- **`grumpy-lift/privacy.html`, `grumpy-lift/support.html`** (yeni): Coffee Stand sayfalarının iskeleti (başlık, sayfa
+  menüsü, EN/TR bölümleri, dil betiği, `site.css?v=5`), içerik Grumpy Lift deposundaki `web sitesi/privacy.html` ve
+  `support.html`'den (D36 sonrası "veri toplanmıyor" metni; yürürlük 21 Kasım 2026). Destek SSS'leri `<details>` yerine
+  sitenin `h3 + p` düzeninde. `theme-color` `#141b19` (kart rengi).
+- **`index.html`**: Grumpy Lift kartına Destek / Gizlilik bağlantıları (Coffee Stand kartıyla aynı `game-actions`
+  düzeni, `data-localized-href`); "Coming soon" etiketi duruyor.
+- `README.md` dosya listesine iki sayfa.
+
+### Doğrulama
+- Yerel sunucu (`python3 -m http.server 8781`), yerleşik tarayıcı: iki sayfa EN/TR doğru başlık ve içerik, konsol
+  hatası yok; 375 px'te yatay kaydırma yok; ana sayfa kart bağlantıları TR'de `#tr`'ye gidiyor.
+
+### Açık
+- Dal `feature/grumpy-lift-pages` yalnız yerelde. Canlıya almak için: push → PR → merge (`deploy.yml` FTP), sahip onayıyla.
+- Canlıdan sonra Play Console ve App Store Connect'e `https://celikbasstudio.com/grumpy-lift/privacy.html` girilecek.
+
 ## 2026-11-20 — Yeni oyun kartları (Grumpy Lift, Homedawn, Tiltumi); CANLIDA
 
 Kullanıcı: "siteyi güncellemeden yeni oyunları ekle, codex'teki oyunu da gizli oyun olarak tut." Seçilen oyunlar (kullanıcı

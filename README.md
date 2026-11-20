@@ -14,6 +14,7 @@ Derleme adımı yoktur; dosyalar olduğu gibi yayınlanır.
 - [`ravel/index.html`](./ravel/index.html) — Ravel oyun sayfası
 - [`ravel/privacy.html`](./ravel/privacy.html) · [`ravel/support.html`](./ravel/support.html) · [`ravel/terms.html`](./ravel/terms.html)
 - [`coffee-stand/privacy.html`](./coffee-stand/privacy.html) · [`coffee-stand/support.html`](./coffee-stand/support.html)
+- [`grumpy-lift/privacy.html`](./grumpy-lift/privacy.html) · [`grumpy-lift/support.html`](./grumpy-lift/support.html)
 - [`coffee-stand-daily-orders/privacy.html`](./coffee-stand-daily-orders/privacy.html) · [`coffee-stand-daily-orders/support.html`](./coffee-stand-daily-orders/support.html)
 - [`assets/site.css`](./assets/site.css) — Tüm sayfaların ortak tasarımı. Renkler dosyanın başındaki `:root` bloğundadır.
 - [`assets/home.css`](./assets/home.css) · [`assets/home.js`](./assets/home.js) — Sadece ana sayfanın üst bölümündeki hareketli prizma sahnesi
