@@ -138,6 +138,15 @@ h2{font-size:clamp(32px,3.8vw,50px);line-height:1.1;letter-spacing:-.02em}
 .game-ravel .game-visual img{-webkit-mask-image:radial-gradient(ellipse 28% 58% at 50% 52%,#000 84%,transparent 100%);mask-image:radial-gradient(ellipse 28% 58% at 50% 52%,#000 84%,transparent 100%)}
 .game-coffee{--visual:#492518}
 .game-daily{--visual:#ffb257}
+.game-grumpy{--visual:#141b19}
+.game-homedawn{--visual:#0b4450}
+.game-tiltumi{--visual:#f58c38}
+/* App-icon artwork: shown as a rounded icon in the middle, like the logos of the other cards */
+.game-visual-icon img{top:14%;left:50%;width:auto;height:72%;aspect-ratio:1;border-radius:22%;transform:translateX(-50%);object-fit:cover}
+.game-mystery.game-mystery-paired{grid-column:auto;flex-direction:column}
+.game-mystery.game-mystery-paired .game-visual{flex:none;min-height:0;aspect-ratio:16/9}
+.game-mystery.game-mystery-paired .game-visual span{font-size:clamp(110px,11vw,160px)}
+.game-mystery.game-mystery-paired .game-body{justify-content:flex-start;padding:26px 28px 24px}
 .game-mystery{grid-column:1/-1;flex-direction:row;background:var(--brand);border-color:var(--brand);color:var(--band-muted)}
 .game-mystery .game-visual{flex:0 0 42%;aspect-ratio:auto;min-height:300px;display:grid;place-items:center;background:radial-gradient(circle at 50% 46%,rgba(227,169,77,.2),transparent 58%),var(--brand-deep)}
 .game-mystery .game-visual span{font-family:var(--serif);font-size:clamp(150px,17vw,230px);font-weight:400;line-height:1;color:var(--accent)}
