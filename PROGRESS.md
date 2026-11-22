@@ -1,5 +1,46 @@
 # PROGRESS — celikbasstudio.com
 
+## 2026-11-22 — Ana sayfaya "Haberler" bölümü + Grumpy Lift "App Store’da"; CANLIDA
+
+Kullanıcı: "Yapılan güncelleme diğer haberler için de websitesine bir bölüm aç." Yorum: ana sayfada kalıcı bir haber
+bölümü; ilk haberler 20 Kasım güncellemesi (yeni oyunlar) ve doğrulanmış bir çıkış haberi.
+
+### Yapılanlar
+- **`index.html` `#news` bölümü** (oyunlar ile stüdyo arasında, "02 / News · Haberler"): `section-head` deseni (#games gibi),
+  2 sütunlu `.news-list`, kartlar `.news-item` (tarih `<time datetime>` + etiket hapı + h3 + metin + bağlantı), en yeni üstte.
+  1) **20 Kasım 2026 — Grumpy Lift App Store'da** (Çıkış): bağlantı `https://apps.apple.com/app/id6837496098`.
+  Doğrulama kaynağı: iTunes lookup API (`releaseDate 2026-11-20T08:00Z`, sürüm 1.0.1, US ve TR mağazasında var) +
+  Grumpy Lift `PROGRESS.md` v0.44. Metin: ilk 10 seviye ücretsiz, tek seferlik tam sürüm, reklam/abonelik yok,
+  "Android sürümü yolda" (Play'de kapalı test, herkese açık değil). 2) **20 Kasım 2026 — Koleksiyona üç yeni oyun katıldı**
+  (Stüdyo): `#grumpy-lift`'e gider; gizli oyun adı verilmeden anılıyor.
+  Homedawn haberi bilerek YOK: iOS henüz mağazada değil (lookup boş), Android yalnız kapalı test.
+- **Menü**: "News / Haberler" bağlantısı (#news). Bölüm numaraları: stüdyo 02→03, iletişim 03→04 (EN HTML + TR betik).
+- **Grumpy Lift kartı**: durum hapı `grumpyStatus` "On the App Store / App Store’da" ("Coming soon" artık yanlıştı).
+  Karar: "Out on iOS / iOS’ta çıktı" denendi, TR büyük harfte "İOS" oluyordu → "App Store’da". Karta App Store bağlantısı
+  da eklenmişti, ~1000–1050 px'te alt satırı kaydırıp kart sırasını uzattığı için kaldırıldı (bağlantı haberde).
+- **`assets/site.css`** "Home: news" bloğu: `.news`, `.news-list`, `.news-item` (`.contact-resource` gibi kart), `.news-meta`
+  (`.game-tags` gibi); hap stili `.game-tags span:last-child,.news-meta span` ortak kuralında; metin rengi `--ink-soft`;
+  mobil tek sütun + `22px 20px`; forced-colors ve print listelerine `.news-item`. `site.css?v=5` → `v=6` bütün 15 HTML'de.
+- `README.md` bölüm listesi: `01 Our games · 02 News · 03 The studio · 04 Contact`.
+- **Yeni haber eklemek**: `.news-list`'in en üstüne yeni `<article class="news-item">` kopyala, `data-i18n` anahtarları
+  `newsNTitle/Text/Date/Link` ve TR karşılıklarını `translations.tr`'ye ekle; etiket için `newsRelease`/`newsStudio`.
+  İki sütun düzeni çift sayıda haberde dengeli; tek kalırsa son kart solda yalnız durur (kabul edilebilir).
+
+### Doğrulama
+- Yerel (`python3 -m http.server 8780`), yerleşik tarayıcı: 1280/1024/375 px, EN/TR; yatay kaydırma yok; 8 oyun kartı
+  alt satırı 1024 px TR'de hepsi 57 px; TR büyük harfler doğru ("02 / HABERLER", "ÇIKIŞ", "APP STORE’DA").
+- Bağımsız kontrol ajanı (ui-consistency:verifying): engelleyici hata yok; 4 tutarlılık bulgusu (kart bağlantısı satır
+  kaydırması, kopya hap kuralı, `--text`/`--ink-soft` karışıklığı, yeni `border-top` + işe yaramayan `scroll-margin-top`)
+  → hepsi düzeltildi, ölçülerek doğrulandı.
+- graphify bu oturumda kuruldu (`graphify-init-project`); ürettiği `.claude/`, `.codex/`, `AGENTS.md`, `CLAUDE.md`,
+  `.gitignore`, `.gitattributes` **bilerek commit edilmedi**: `deploy.yml` repodaki her dosyayı FTP ile siteye yüklüyor,
+  araç dosyaları celikbasstudio.com'da herkese açık olurdu. Yerelde duruyorlar.
+
+### Açık
+- Homedawn iOS'ta yayına çıkınca: Homedawn kartı durumunu güncelle + Haberler'e çıkış haberi ekle (App Store id 6837619790).
+- Grumpy Lift Android herkese açık olunca: haberdeki "Android sürümü yolda" cümlesini güncelle ya da yeni haber ekle.
+- Repo'da `deploy.yml` her dosyayı yüklüyor (README, PROGRESS dahil). İstenirse FTP adımına hariç tutma listesi eklenebilir.
+
 ## 2026-11-21 — Grumpy Lift gizlilik ve destek sayfaları (yerel dal, henüz canlı değil)
 
 Kullanıcı (Grumpy Lift oturumu): gizlilik politikası adresi için "celikbasstudio.com", destek e-postası
