@@ -8,7 +8,7 @@ Oyunlar: **Prizmic**, **Ravel**, **The Coffee Stand**, **Coffee Stand: Daily Ord
 
 Derleme adımı yoktur; dosyalar olduğu gibi yayınlanır.
 
-- [`index.html`](./index.html) — Ana stüdyo sayfası (`01 Our games` · `02 The studio` · `03 Contact`)
+- [`index.html`](./index.html) — Ana stüdyo sayfası (`01 Our games` · `02 News` · `03 The studio` · `04 Contact`)
 - [`terms.html`](./terms.html) — Kullanım Koşulları
 - [`prizmic/privacy.html`](./prizmic/privacy.html) — Prizmic gizlilik ve destek
 - [`ravel/index.html`](./ravel/index.html) — Ravel oyun sayfası

@@ -161,7 +161,7 @@ h2{font-size:clamp(32px,3.8vw,50px);line-height:1.1;letter-spacing:-.02em}
 .game-soon .game-description{max-width:60ch}
 .game-body{display:flex;flex-direction:column;flex:1;padding:26px 28px 24px}
 .game-tags{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
-.game-tags span:last-child{padding:4px 10px;border:1px solid var(--line);border-radius:999px;font-size:11px;letter-spacing:.08em;color:var(--ink-soft);white-space:nowrap}
+.game-tags span:last-child,.news-meta span{padding:4px 10px;border:1px solid var(--line);border-radius:999px;font-size:11px;letter-spacing:.08em;color:var(--ink-soft);white-space:nowrap}
 .game-heading{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
 .game-heading h3{font-size:clamp(26px,2.6vw,34px);line-height:1.15}
 .game-number{font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -178,6 +178,15 @@ h2{font-size:clamp(32px,3.8vw,50px);line-height:1.1;letter-spacing:-.02em}
 .studio-text{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:30px}
 .studio-values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:40px}
 .studio-values span{padding-top:16px;border-top:2px solid var(--ink);font-family:var(--serif);font-size:19px;line-height:1.3;color:var(--ink)}
+
+/* ---------- Home: news ---------- */
+.news{padding-block:clamp(60px,7vw,96px) clamp(56px,7vw,88px)}
+.news-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.news-item{display:flex;flex-direction:column;padding:26px 28px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.news-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.news-item h3{font-size:24px;line-height:1.2;margin-bottom:8px}
+.news-item>p:not(.news-meta){flex:1;font-size:16px;color:var(--ink-soft)}
+.news-item .resource-links{margin-top:14px}
 
 /* ---------- Contact (home + game) ---------- */
 .home-page .contact,.game-page .contact{padding-block:clamp(60px,7vw,96px) clamp(52px,6vw,80px)}
@@ -282,6 +291,7 @@ html[data-language] .document>section{margin-top:0;padding-top:0;border-top:0}
   .contact-heading{display:block}
   .contact-heading>p{margin-top:18px}
   .contact-resources{grid-template-columns:1fr;gap:18px}
+  .news-list{grid-template-columns:1fr;gap:18px}
   .habit-inner{grid-template-columns:1fr;gap:24px}
 }
 @media(max-width:700px){
@@ -297,6 +307,7 @@ html[data-language] .document>section{margin-top:0;padding-top:0;border-top:0}
   .daily-inner{grid-template-columns:1fr;gap:8px}
   .puzzles{grid-template-columns:1fr}
   .game-body,.game-mystery .game-body{padding:22px 20px 20px}
+  .news-item{padding:22px 20px}
   .contact-resource{padding:22px 20px}
   .page-nav{flex-direction:column;align-items:flex-start;gap:0;padding-block:14px 6px}
   .contents ul{grid-template-columns:1fr}
@@ -305,7 +316,7 @@ html[data-language] .document>section{margin-top:0;padding-top:0;border-top:0}
   .footer-right{align-items:flex-start;flex-direction:column;gap:0}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-@media(forced-colors:active){.button,.game,.contact-resource,.puzzle,.doc-page .contact,.index-link{border:1px solid CanvasText}}
+@media(forced-colors:active){.button,.game,.news-item,.contact-resource,.puzzle,.doc-page .contact,.index-link{border:1px solid CanvasText}}
 @media print{
   body{background:#fff;color:#000}
   .site-header,.page-nav,.skip-link,.site-footer,.hero-actions,.game-index{display:none}
@@ -314,5 +325,5 @@ html[data-language] .document>section{margin-top:0;padding-top:0;border-top:0}
   .document{max-width:none;padding:0}
   .document a{color:#000}
   h2,h3{break-after:avoid}
-  .game,.puzzle,.contact-resource{break-inside:avoid}
+  .game,.news-item,.puzzle,.contact-resource{break-inside:avoid}
 }
