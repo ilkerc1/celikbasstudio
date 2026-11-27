@@ -1,5 +1,41 @@
 # PROGRESS — celikbasstudio.com
 
+## 2026-11-27 — Daily Orders "App Store’da" + çıkış haberi; Firebase gizlilik metni ayrı dalda (ikisi de CANLI DEĞİL)
+
+İstek: Coffee Stand: Daily Orders oturumu (`local_ba91f4c7…`, sahip onaylı) iki düzeltme gönderdi. Push/merge için sahibe
+sorulacak; Firebase metni 1.0.0 (3) onaylanana kadar `main`'e girmez.
+
+### Yapılanlar
+- **Dal `feature/daily-orders-live`** (`9e458ca` + bu PROGRESS commit'i), `main`'den: `index.html`
+  - Daily Orders kartı "Coming soon" → **"On the App Store / App Store’da"**. Ortak yeni anahtar `appStoreStatus`; Grumpy
+    Lift'in `grumpyStatus`'u da buna taşındı. Karar: `dailyStatus` metnini değiştirmek Homedawn/Tiltumi/Mystery/"coming"
+    kartlarını da "yayında" yapardı (hepsi bu anahtarı paylaşıyor), o yüzden ayrı anahtar.
+  - Karta App Store bağlantısı **eklenmedi**: Grumpy Lift'te üçüncü bağlantı ~1000–1050 px'te alt satırı kaydırıp sırayı
+    uzatmıştı (2026-11-22 kararı); yayındaki kartların biçimi = durum hapı + Haberler'de bağlantı.
+  - Haberler'e 3. madde: **6 Kasım 2026 — Coffee Stand: Daily Orders App Store’da** (`#news-daily-release`, bağlantı
+    `https://apps.apple.com/app/id6830947712`, `news1Link` anahtarını yeniden kullanır; TR `news3*`). Tarih iTunes lookup'tan
+    (`releaseDate 2026-11-06T08:00Z`, US + TR mağazada); istekte "7 Kasım" yazıyordu, Apple kaydı esas alındı. Play
+    bağlantısı yok (kapalı test). Haberler 3 madde → son kart solda tek (kabul edilmişti).
+- **Dal `feature/daily-orders-privacy-firebase`** (`b67e508`, `8029b2f`), `main`'den, **`main`'e birleştirme**:
+  `coffee-stand-daily-orders/privacy.html` — EN+TR "Analytics / Analiz (Google Analytics for Firebase)" bölümü (Satın alma'dan
+  önce), "analiz hizmeti yok" cümleleri düzeltildi, Android izin cümlesine analiz eklendi, bölüm başlığı "Your progress stays
+  on your device / İlerlemeniz cihazınızda kalır", "Updated: 27 November 2026 (analytics)", meta açıklaması (etiket +
+  `descriptions` nesnesi). Kaynak: `coffee-stand-daily-orders` deposu `docs/store/site/.../privacy.html`; yalnız Firebase
+  kısmı alındı, canlı sayfanın yapısına ve TR "siz" diline uyarlandı.
+
+### Doğrulama
+- Yerel (`python3 -m http.server 8780`), yerleşik tarayıcı 1024 px EN/TR: durum hapları Daily Orders + Grumpy "APP STORE’DA",
+  diğerleri "YAKINDA"; 8 kart alt satırı 57 px; gizlilik sayfası EN/TR başlık, meta, iki Firebase bölümü, konsol hatası yok.
+- Bağımsız kontrol ajanı: kod hatası yok; TR anahtarları tam, `grumpyStatus` kalmadı, bağlantılar doğru oyuna gidiyor,
+  EN/TR Firebase içeriği eşit, HTML dengeli. İki metin önerisi (bölüm başlığı, `?hl=tr` tutarlılığı) uygulandı.
+
+### Açık
+- **`feature/daily-orders-live`**: sahip onayıyla push → PR → merge (= canlı).
+- **`feature/daily-orders-privacy-firebase`**: Daily Orders 1.0.0 (3) yayını onaylanınca `main`'e (gerekirse önce `main`'e
+  rebase) ve "Updated" tarihini birleştirme gününe çek. O sürüm mağazaya bu sayfa canlı olmadan çıkmamalı.
+- graphify dosyaları (`CLAUDE.md`, `AGENTS.md`, `.claude/`, `.codex/`, `.gitignore`, `.gitattributes`) hâlâ bilerek
+  commit'siz (FTP her dosyayı yayınlıyor).
+
 ## 2026-11-22 — Ana sayfaya "Haberler" bölümü + Grumpy Lift "App Store’da"; CANLIDA
 
 Kullanıcı: "Yapılan güncelleme diğer haberler için de websitesine bir bölüm aç." Yorum: ana sayfada kalıcı bir haber
